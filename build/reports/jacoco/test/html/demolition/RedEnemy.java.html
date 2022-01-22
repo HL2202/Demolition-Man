@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RedEnemy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demolition</a> &gt; <a href="index.source.html" class="el_package">demolition</a> &gt; <span class="el_source">RedEnemy.java</span></div><h1>RedEnemy.java</h1><pre class="source lang-java linenums">/**
+ * 
+ * RedEnemy is the class which creates a new red enemy object into the game
+ * Red enemy is one of two enemies in the game which are able to interact with the player
+ * 
+ * Red enemy extends from the Enemy superclass as well as the Figure superclass, and inherits all of their methods
+ * 
+ * @author  Harry Li
+ * @version %I%, %G%
+ * @since   1.0
+ */
+
+
+package demolition;
+
+import processing.core.PImage;
+import processing.core.PApplet;
+import java.util.ArrayList;
+import java.lang.Math;
+
+import demolition.DynamicMatrix;
+import demolition.Enemy;
+
+
+public class RedEnemy extends Enemy {
+
+
+    private int timer, redEnemyRow, redEnemyColumn;
+
+    private DynamicMatrix levels;
+    private ArrayList&lt;String&gt; level1;
+
+    private ArrayList&lt;String&gt; individualRow;
+    private String currentRow;
+
+    private PImage sprite;
+
+    /**
+     * Creates a new red enemy to bbe displayed on the map in the game
+     * 
+     * @param x     the x-coordinate of the red enemy
+     * @param y     the y-coordinate of the red enemy
+     * 
+     * @see         Enemy
+     * @see         Figure
+     */
+
+    public RedEnemy(int x, int y) {
+
+<span class="fc" id="L50">        super(x, y);</span>
+
+<span class="fc" id="L52">        this.levels = new DynamicMatrix();</span>
+<span class="fc" id="L53">        this.level1 = levels.getLevel1();</span>
+
+<span class="fc" id="L55">        this.redEnemyRow = 5;</span>
+<span class="fc" id="L56">        this.redEnemyColumn = 8;</span>
+<span class="fc" id="L57">        this.currentRow = level1.get(redEnemyRow);</span>
+
+<span class="fc" id="L59">        this.individualRow = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L60">        this.timer = 0;</span>
+<span class="fc" id="L61">    }</span>
+
+    /**
+     * Updates the map by incrementing a timer for the red enemy's movement and interacting with the map environment
+     * 
+     * Based on the AI, the red enemy will make a movement every second, which will update its position and direction
+     * 
+     * @see     Figure
+     */
+
+    public void tick() {
+
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        if (replace) {</span>
+
+<span class="fc" id="L75">            level1 = levels.replaceBrokenWall(level1, replaceX, replaceY);</span>
+<span class="fc" id="L76">            replace = false;</span>
+        }
+
+<span class="fc" id="L79">        level1 = levels.getLevel1();</span>
+
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (reset) {</span>
+
+<span class="fc" id="L83">            levels.resetLevel1(level1);</span>
+<span class="fc" id="L84">            this.x = 256;</span>
+<span class="fc" id="L85">            this.y = 208;</span>
+            
+<span class="fc" id="L87">            this.redEnemyRow = 5;</span>
+<span class="fc" id="L88">            this.redEnemyColumn = 8;</span>
+
+<span class="fc" id="L90">            this.moveDown = true;</span>
+<span class="fc" id="L91">            this.moveLeft = false;</span>
+<span class="fc" id="L92">            this.moveUp = false;</span>
+<span class="fc" id="L93">            this.moveRight = false;</span>
+            
+<span class="fc" id="L95">            reset = false;</span>
+<span class="fc" id="L96">            this.timer = 0;</span>
+        }
+        
+<span class="fc" id="L99">        this.timer ++;</span>
+
+<span class="fc" id="L101">        boolean moved = false;</span>
+
+<span class="fc bfc" id="L103" title="All 4 branches covered.">        if (this.timer &gt; SECONDS_BETWEEN_MOVES * App.FPS &amp;&amp; !enemyRemoved) {</span>
+
+<span class="fc bfc" id="L105" title="All 2 branches covered.">            while (!moved) {</span>
+
+<span class="fc" id="L107">                int randNum = (int)(Math.random() * 3) + 1;</span>
+            
+<span class="fc bfc" id="L109" title="All 2 branches covered.">                if (moveUp) {</span>
+
+<span class="fc" id="L111">                    moveDown = false;</span>
+<span class="fc" id="L112">                    moveUp = true;</span>
+<span class="fc" id="L113">                    moveLeft = false;</span>
+<span class="fc" id="L114">                    moveRight = false;</span>
+
+<span class="fc" id="L116">                    String rowAbove = level1.get(redEnemyRow - 1);</span>
+
+<span class="fc bfc" id="L118" title="All 2 branches covered.">                    for (int i = 0; i &lt; rowAbove.length(); i++) {</span>
+          
+<span class="fc" id="L120">                        Character c = rowAbove.charAt(i);</span>
+<span class="fc" id="L121">                        String letter = c.toString();</span>
+
+<span class="pc bpc" id="L123" title="1 of 6 branches missed.">                        if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+
+<span class="fc" id="L125">                            individualRow.add(letter);</span>
+                        }
+
+                        else {
+
+<span class="fc" id="L130">                            individualRow.add(&quot; &quot;);</span>
+                        }
+                    }
+
+<span class="pc bpc" id="L134" title="1 of 4 branches missed.">                    if (individualRow.get(redEnemyColumn).equals(&quot;W&quot;) || individualRow.get(redEnemyColumn).equals(&quot;B&quot;)) {</span>
+
+<span class="fc" id="L136">                        moveUp = false;</span>
+
+<span class="fc bfc" id="L138" title="All 2 branches covered.">                        if (randNum == 1) {</span>
+
+<span class="fc" id="L140">                            moveRight = true;</span>
+                        }
+
+<span class="fc bfc" id="L143" title="All 2 branches covered.">                        else if (randNum == 2) {</span>
+
+<span class="fc" id="L145">                            moveDown = true;</span>
+                        }
+
+                        else {
+
+<span class="fc" id="L150">                            moveLeft = true;</span>
+                        }
+
+<span class="fc" id="L153">                        individualRow = new ArrayList&lt;String&gt;();</span>
+                    }
+
+                    else {
+
+<span class="fc" id="L158">                        this.y -= 32;</span>
+<span class="fc" id="L159">                        redEnemyRow --;</span>
+<span class="fc" id="L160">                        individualRow = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L161">                        moved = true;</span>
+                    }
+<span class="fc" id="L163">                }</span>
+
+
+<span class="fc bfc" id="L166" title="All 2 branches covered.">                else if (moveDown) {</span>
+
+<span class="fc" id="L168">                    moveDown = true;</span>
+<span class="fc" id="L169">                    moveUp = false;</span>
+<span class="fc" id="L170">                    moveLeft = false;</span>
+<span class="fc" id="L171">                    moveRight = false;</span>
+
+<span class="fc" id="L173">                    String rowBelow = level1.get(redEnemyRow + 1);</span>
+
+<span class="fc bfc" id="L175" title="All 2 branches covered.">                    for (int i = 0; i &lt; rowBelow.length(); i++) {</span>
+          
+<span class="fc" id="L177">                        Character c = rowBelow.charAt(i);</span>
+<span class="fc" id="L178">                        String letter = c.toString();</span>
+
+<span class="pc bpc" id="L180" title="2 of 6 branches missed.">                        if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+
+<span class="fc" id="L182">                            individualRow.add(letter);</span>
+                        }
+
+                        else {
+
+<span class="fc" id="L187">                            individualRow.add(&quot; &quot;);</span>
+                        }
+                    }
+
+<span class="pc bpc" id="L191" title="1 of 4 branches missed.">                    if (individualRow.get(redEnemyColumn).equals(&quot;W&quot;) || individualRow.get(redEnemyColumn).equals(&quot;B&quot;)) {</span>
+                        
+<span class="fc" id="L193">                        moveDown = false;</span>
+
+<span class="fc bfc" id="L195" title="All 2 branches covered.">                        if (randNum == 1) {</span>
+
+<span class="fc" id="L197">                            moveLeft = true;</span>
+                        }
+
+<span class="fc bfc" id="L200" title="All 2 branches covered.">                        else if (randNum == 2) {</span>
+
+<span class="fc" id="L202">                            moveUp = true;</span>
+                        }
+
+                        else {
+<span class="fc" id="L206">                            moveRight = true;</span>
+
+                        }
+
+<span class="fc" id="L210">                        individualRow = new ArrayList&lt;String&gt;();</span>
+                    }
+
+                    else {
+
+<span class="fc" id="L215">                        this.y += 32;</span>
+<span class="fc" id="L216">                        redEnemyRow ++;</span>
+<span class="fc" id="L217">                        individualRow = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L218">                        moved = true;</span>
+                    }
+<span class="fc" id="L220">                }</span>
+
+
+<span class="fc bfc" id="L223" title="All 2 branches covered.">                else if (moveLeft) {</span>
+
+<span class="fc" id="L225">                    moveDown = false;</span>
+<span class="fc" id="L226">                    moveUp = false;</span>
+<span class="fc" id="L227">                    moveLeft = true;</span>
+<span class="fc" id="L228">                    moveRight = false;</span>
+
+<span class="fc" id="L230">                    String row = level1.get(redEnemyRow);</span>
+
+<span class="fc bfc" id="L232" title="All 2 branches covered.">                    for (int i = 0; i &lt; row.length(); i++) {</span>
+                  
+<span class="fc" id="L234">                        Character c = row.charAt(i);</span>
+<span class="fc" id="L235">                        String letter = c.toString();</span>
+        
+<span class="pc bpc" id="L237" title="1 of 6 branches missed.">                        if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+
+<span class="fc" id="L239">                            individualRow.add(letter);</span>
+                        }
+        
+                        else {
+
+<span class="fc" id="L244">                            individualRow.add(&quot; &quot;);</span>
+                        }
+                    }
+        
+<span class="pc bpc" id="L248" title="2 of 4 branches missed.">                    if (individualRow.get(redEnemyColumn - 1).equals(&quot;W&quot;) || individualRow.get(redEnemyColumn - 1).equals(&quot;B&quot;)) {</span>
+
+<span class="nc" id="L250">                        moveLeft = false;</span>
+
+<span class="nc bnc" id="L252" title="All 2 branches missed.">                        if (randNum == 1) {</span>
+
+<span class="nc" id="L254">                            moveUp = true;</span>
+                        }
+
+<span class="nc bnc" id="L257" title="All 2 branches missed.">                        else if (randNum == 2) {</span>
+
+<span class="nc" id="L259">                            moveRight = true;</span>
+                        }
+
+                        else {
+
+<span class="nc" id="L264">                            moveDown = true;</span>
+                        }
+
+<span class="nc" id="L267">                        individualRow = new ArrayList&lt;String&gt;();</span>
+                    }
+        
+                    else {
+
+<span class="fc" id="L272">                        this.x -= 32;</span>
+<span class="fc" id="L273">                        redEnemyColumn --;</span>
+<span class="fc" id="L274">                        individualRow = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L275">                        moved = true;</span>
+                    }
+<span class="fc" id="L277">                }</span>
+
+
+<span class="pc bpc" id="L280" title="1 of 2 branches missed.">                else if (moveRight) {</span>
+
+<span class="fc" id="L282">                    moveDown = false;</span>
+<span class="fc" id="L283">                    moveUp = false;</span>
+<span class="fc" id="L284">                    moveLeft = false;</span>
+<span class="fc" id="L285">                    moveRight = true;</span>
+                
+<span class="fc" id="L287">                    String row = level1.get(redEnemyRow);</span>
+
+<span class="fc bfc" id="L289" title="All 2 branches covered.">                    for (int i = 0; i &lt; row.length(); i++) {</span>
+                  
+<span class="fc" id="L291">                        Character c = row.charAt(i);</span>
+<span class="fc" id="L292">                        String letter = c.toString();</span>
+        
+<span class="pc bpc" id="L294" title="1 of 6 branches missed.">                        if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+
+<span class="fc" id="L296">                            individualRow.add(letter);</span>
+                        }
+        
+                        else {
+
+<span class="fc" id="L301">                            individualRow.add(&quot; &quot;);</span>
+                        }
+                    }
+        
+<span class="pc bpc" id="L305" title="1 of 4 branches missed.">                    if (individualRow.get(redEnemyColumn + 1).equals(&quot;W&quot;) || individualRow.get(redEnemyColumn + 1).equals(&quot;B&quot;)) {</span>
+
+<span class="fc" id="L307">                        moveRight = false;</span>
+
+<span class="fc bfc" id="L309" title="All 2 branches covered.">                        if (randNum == 1) {</span>
+
+<span class="fc" id="L311">                            moveDown = true;</span>
+                        }
+
+<span class="fc bfc" id="L314" title="All 2 branches covered.">                        else if (randNum == 2) {</span>
+
+<span class="fc" id="L316">                            moveLeft = true;</span>
+                        }
+
+                        else {
+
+<span class="fc" id="L321">                            moveUp = true;</span>
+                        }
+
+<span class="fc" id="L324">                        individualRow = new ArrayList&lt;String&gt;();</span>
+                    }
+        
+                    else {
+
+<span class="fc" id="L329">                        this.x += 32;</span>
+<span class="fc" id="L330">                        redEnemyColumn ++;</span>
+<span class="fc" id="L331">                        individualRow = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L332">                        moved = true;</span>
+                    }
+                }
+
+<span class="fc" id="L336">                this.timer = 0;</span>
+<span class="fc" id="L337">            }</span>
+        }
+<span class="fc" id="L339">    }</span>
+
+    /**
+     * Reverts an incrementing of the timer by decreasing the count by 1
+     */
+
+    public void timerUndo() {
+
+<span class="fc" id="L347">        this.timer --;</span>
+<span class="fc" id="L348">    }</span>
+
+
+    /**
+     * ONLY USED FOR TESTING
+     */
+
+    //  ONLY USED FOR TESTING
+
+    public void setMoveRight() {
+
+<span class="fc" id="L359">        this.moveRight = true;</span>
+<span class="fc" id="L360">        this.moveDown = false;</span>
+<span class="fc" id="L361">        this.moveLeft = false;</span>
+<span class="fc" id="L362">        this.moveUp = false;</span>
+<span class="fc" id="L363">    }</span>
+
+    /**
+     * ONLY USED FOR TESTING
+     */
+
+    //  ONLY USED FOR TESTING
+
+    public void setMoveLeft() {
+
+<span class="fc" id="L373">        this.moveRight = false;</span>
+<span class="fc" id="L374">        this.moveDown = false;</span>
+<span class="fc" id="L375">        this.moveLeft = true;</span>
+<span class="fc" id="L376">        this.moveUp = false;</span>
+<span class="fc" id="L377">    }</span>
+
+    /**
+     * ONLY USED FOR TESTING
+     */
+
+    //  ONLY USED FOR TESTING
+
+    public void setMoveUp() {
+
+<span class="fc" id="L387">        this.moveRight = false;</span>
+<span class="fc" id="L388">        this.moveDown = false;</span>
+<span class="fc" id="L389">        this.moveLeft = false;</span>
+<span class="fc" id="L390">        this.moveUp = true;</span>
+<span class="fc" id="L391">    }</span>
+
+    /**
+     * ONLY USED FOR TESTING
+     */
+
+    //  ONLY USED FOR TESTING
+
+    public void setMoveDown() {
+
+<span class="fc" id="L401">        this.moveRight = false;</span>
+<span class="fc" id="L402">        this.moveDown = true;</span>
+<span class="fc" id="L403">        this.moveLeft = false;</span>
+<span class="fc" id="L404">        this.moveUp = false;</span>
+<span class="fc" id="L405">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DynamicMatrix.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demolition</a> &gt; <a href="index.source.html" class="el_package">demolition</a> &gt; <span class="el_source">DynamicMatrix.java</span></div><h1>DynamicMatrix.java</h1><pre class="source lang-java linenums">/**
+ * 
+ * DynamicMatrix is the base class used to construct the map which will be loaded onto the screen at the start of the game
+ * 
+ * As there are two levels to the game, two separate maps will be created, and each map can be updated according to the respective method
+ * 
+ * @author  Harry Li
+ * @version %I%, %G%
+ * @since   1.0
+ */
+
+
+package demolition;
+
+import java.util.ArrayList;
+
+
+public class DynamicMatrix {
+    
+    private ArrayList&lt;String&gt; level1;
+
+    private ArrayList&lt;String&gt; level2;
+
+
+    /**
+     * 
+     * Constructs the two maps which will be drawn onto the screen, with &quot;W&quot; corresponding to solid walls, &quot;B&quot; corresponding to broken walls and &quot; &quot; corresponding to empty tiles
+     */
+
+
+<span class="fc" id="L31">    public DynamicMatrix() {</span>
+        
+<span class="fc" id="L33">        level1 = new ArrayList&lt;String&gt;();</span>
+
+<span class="fc" id="L35">        level1.add(&quot;WWWWWWWWWWWWWWW&quot;);</span>
+<span class="fc" id="L36">        level1.add(&quot;WP    BBB BBBBW&quot;);</span>
+<span class="fc" id="L37">        level1.add(&quot;W W W W W W W W&quot;);</span>
+<span class="fc" id="L38">        level1.add(&quot;W         B B W&quot;);</span>
+<span class="fc" id="L39">        level1.add(&quot;WBW W W W WBW W&quot;);</span>
+<span class="fc" id="L40">        level1.add(&quot;W       R  B  W&quot;);</span>
+<span class="fc" id="L41">        level1.add(&quot;W W W W W W W W&quot;);</span>
+<span class="fc" id="L42">        level1.add(&quot;WB   B   B    W&quot;);</span>
+<span class="fc" id="L43">        level1.add(&quot;WBW W W WBW W W&quot;);</span>
+<span class="fc" id="L44">        level1.add(&quot;W    YBB   B BW&quot;);</span>
+<span class="fc" id="L45">        level1.add(&quot;W WBW W W W W W&quot;);</span>
+<span class="fc" id="L46">        level1.add(&quot;W        B   GW&quot;);</span>
+<span class="fc" id="L47">        level1.add(&quot;WWWWWWWWWWWWWWW&quot;);</span>
+
+<span class="fc" id="L49">        level2 = new ArrayList&lt;String&gt;();</span>
+
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        for (int i = 0; i &lt; 5; i++) {</span>
+
+<span class="fc" id="L53">            level2.add(&quot;               &quot;);</span>
+        }
+<span class="fc" id="L55">        level2.add(&quot;WWWWWWWWWWWWWWW&quot;);</span>
+<span class="fc" id="L56">        level2.add(&quot;WP    B      GW&quot;);</span>
+<span class="fc" id="L57">        level2.add(&quot;WWWWWWWWWWWWWWW&quot;);</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        for (int i = 0; i &lt; 5; i++) {</span>
+
+<span class="fc" id="L60">            level2.add(&quot;               &quot;);</span>
+        }
+<span class="fc" id="L62">    }</span>
+
+    /**
+     * Returns the map displaying the first level of the game
+     * 
+     * @return  ArrayList containing the first level of the game
+     */
+
+    public ArrayList&lt;String&gt; getLevel1() {
+
+<span class="fc" id="L72">        return level1;</span>
+    }
+
+    /**
+     * Updates the map by replacing a broken wall with an empty tile and returning the new map to be displayed
+     * 
+     * @param level     the specific level of which the map is to be updated
+     * @param x         the x coordinate of the broken wall
+     * @param y         the y coordinate of the broken wall
+     * @return          ArrayList containing an updated map with the broken wall replaced by an empty tile
+     */
+
+
+    public ArrayList&lt;String&gt; replaceBrokenWall(ArrayList&lt;String&gt; level, int x, int y) {
+
+<span class="fc" id="L87">        int column = x / 32;</span>
+<span class="fc" id="L88">        int row = y / 32;</span>
+
+<span class="fc" id="L90">        String replaceRow = level.get(row);</span>
+<span class="fc" id="L91">        ArrayList&lt;String&gt; newRow = new ArrayList&lt;String&gt;();</span>
+
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        for (int i = 0; i &lt; replaceRow.length(); i++) {</span>
+          
+<span class="fc" id="L95">            Character c = replaceRow.charAt(i);</span>
+<span class="fc" id="L96">            String letter = c.toString();</span>
+
+<span class="fc bfc" id="L98" title="All 6 branches covered.">            if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+
+<span class="fc" id="L100">                newRow.add(letter);</span>
+            }
+
+            else {
+
+<span class="fc" id="L105">                newRow.add(&quot; &quot;);</span>
+            }
+        }
+
+<span class="fc" id="L109">        newRow.set(column, &quot; &quot;);</span>
+<span class="fc" id="L110">        String newLine = &quot;&quot;;</span>
+
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        for (int j = 0; j &lt; newRow.size(); j++) {</span>
+
+<span class="fc" id="L114">            newLine += newRow.get(j);</span>
+        }
+
+<span class="fc" id="L117">        level.set(row, newLine);</span>
+<span class="fc" id="L118">        return level;</span>
+    }
+
+    /**
+     * Resets the map of the first level to its default appearance
+     * 
+     * @param level1    ArrayList containing the map of the first level
+     */
+
+
+    public void resetLevel1(ArrayList&lt;String&gt; level1) {
+
+<span class="fc" id="L130">        level1.set(0, &quot;WWWWWWWWWWWWWWW&quot;);</span>
+<span class="fc" id="L131">        level1.set(1, &quot;WP    BBB BBBBW&quot;);</span>
+<span class="fc" id="L132">        level1.set(2, &quot;W W W W W W W W&quot;);</span>
+<span class="fc" id="L133">        level1.set(3, &quot;W         B B W&quot;);</span>
+<span class="fc" id="L134">        level1.set(4, &quot;WBW W W W WBW W&quot;);</span>
+<span class="fc" id="L135">        level1.set(5, &quot;W       R  B  W&quot;);</span>
+<span class="fc" id="L136">        level1.set(6, &quot;W W W W W W W W&quot;);</span>
+<span class="fc" id="L137">        level1.set(7, &quot;WB   B   B    W&quot;);</span>
+<span class="fc" id="L138">        level1.set(8, &quot;WBW W W WBW W W&quot;);</span>
+<span class="fc" id="L139">        level1.set(9, &quot;W    YBB   B BW&quot;);</span>
+<span class="fc" id="L140">        level1.set(10, &quot;W WBW W W W W W&quot;);</span>
+<span class="fc" id="L141">        level1.set(11, &quot;W        B   GW&quot;);</span>
+<span class="fc" id="L142">        level1.set(12, &quot;WWWWWWWWWWWWWWW&quot;);</span>
+
+<span class="fc" id="L144">    }</span>
+
+
+    /**
+     * Returns the map displaying the second level of the game
+     * 
+     * @return  ArrayList containing the second level of the game
+     */
+
+
+    public ArrayList&lt;String&gt; getLevel2() {
+
+<span class="fc" id="L156">        return level2;</span>
+    }
+
+    /**
+     * Resets the map of the second level to its default appearance
+     * 
+     * @param level2    ArrayList containing the map of the second level
+     */
+    
+    public void resetLevel2(ArrayList&lt;String&gt; level2) {
+
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        for (int i = 0; i &lt; 5; i++) {</span>
+<span class="fc" id="L168">            level2.set(i, &quot;               &quot;);</span>
+        }
+
+<span class="fc" id="L171">        level2.set(5, &quot;WWWWWWWWWWWWWWW&quot;);</span>
+<span class="fc" id="L172">        level2.set(6, &quot;WP    B      GW&quot;);</span>
+<span class="fc" id="L173">        level2.set(7, &quot;WWWWWWWWWWWWWWW&quot;);</span>
+
+<span class="fc bfc" id="L175" title="All 2 branches covered.">        for (int j = 8; j &lt; 13; j++) {</span>
+<span class="fc" id="L176">            level2.set(j, &quot;               &quot;);</span>
+        }
+<span class="fc" id="L178">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EndScreen.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demolition</a> &gt; <a href="index.source.html" class="el_package">demolition</a> &gt; <span class="el_source">EndScreen.java</span></div><h1>EndScreen.java</h1><pre class="source lang-java linenums">/**
+ * EndScreen is the object used to store the two forms of end screen to be displayed: &quot;GAME OVER and &quot;YOU WIN&quot;.
+ * 
+ * The x and y coordinates and display line of the end screen are passed as arguments when constructing the object.
+ * 
+ * The coordinates corresponds to a specific position denoted by App.java, which draws the end screen graphic into the coordinates.
+ * 
+ * The line can either be one of &quot;GAME OVER&quot; or &quot;YOU WIN&quot; depending on the outomce of the game
+ * 
+ * @author  Harry Li
+ * @version %I%, %G%
+ * @since   1.0
+ */
+
+package demolition;
+
+import processing.core.PApplet;
+import processing.core.PFont;
+
+import demolition.TextDisplay;
+
+public class EndScreen extends TextDisplay {
+    
+    private String line;
+
+    /**
+     * Creates a new end screen object which extends from all of the attributes and methods from the TextDisplay super class, including text(), createFont(), textFont(), textSize(), getX() and getY().
+     * 
+     * @param x     the x-coordinate of the end screen
+     * @param y     the y-coordinate of the end screen
+     * @param line  the line to be displayed based on the outcome of the game
+     * 
+     * @see         TextDisplay
+     * @since       1.0
+     */
+
+    public EndScreen(int x, int y, String line) {
+        
+<span class="fc" id="L39">        super(x, y);</span>
+<span class="fc" id="L40">        this.line = line;</span>
+<span class="fc" id="L41">    }</span>
+
+    /**
+     * Creates the text in the App.java to be displayed on the screen
+     * 
+     * Abstract method inherited from the TextDisplay class
+     * 
+     * @param app   the App from which the program will run
+     * 
+     * @see         TextDisplay
+     * @since       1.0
+     */
+
+    public void text(PApplet app) {
+
+<span class="nc" id="L56">        app.text(this.line, this.x, this.y);</span>
+<span class="nc" id="L57">    }   </span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

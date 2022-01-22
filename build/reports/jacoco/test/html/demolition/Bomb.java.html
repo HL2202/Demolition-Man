@@ -1,0 +1,818 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Bomb.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demolition</a> &gt; <a href="index.source.html" class="el_package">demolition</a> &gt; <span class="el_source">Bomb.java</span></div><h1>Bomb.java</h1><pre class="source lang-java linenums">/**
+ * 
+ * Bomb is the class used to create a bomb object which is called every time the player presses the space bar
+ * 
+ * The bomb is deployed directly from bomb guy's coordinates, and is controlled via the Runner class
+ * 
+ * Although not inheriting any classes explicitly, the bomb class is heavily dependent on the operations of many other classes,  
+ * including the BombGuy class, Runner class and Explosion class
+ * 
+ * @author  Harry Li
+ * @version %I%, %G%
+ * @since   1.0
+ */
+
+
+package demolition;
+
+import processing.core.PImage;
+import processing.core.PApplet;
+import java.util.ArrayList;
+
+import demolition.DynamicMatrix;
+
+
+public class Bomb {
+
+
+    private int x, y, timer, bombRow, bombColumn, spriteTimer;
+    private PImage sprite;
+
+    public static final int COUNTDOWN = 2;
+    
+    private boolean exploded, blockedUp, blockedDown, blockedLeft, blockedRight, setLevel1;
+
+    private boolean blockedUp2, blockedDown2, blockedLeft2, blockedRight2;
+
+<span class="fc" id="L37">    private static DynamicMatrix levels = new DynamicMatrix();</span>
+    private ArrayList&lt;String&gt; level;
+
+    private ArrayList&lt;String&gt; individualRow;
+
+    private boolean brokenWallUp1, brokenWallDown1, brokenWallLeft1, brokenWallRight1, brokenWallUp2, brokenWallDown2, brokenWallLeft2, brokenWallRight2;
+
+    private boolean bombSprite1, bombSprite2, bombSprite3, bombSprite4, bombSprite5, bombSprite6, bombSprite7, bombSprite8;
+
+    /**
+     * Creates a new bomb object which is instantiated to be in the same position as the bomb guy's coordinates, 
+     * hence the params will pass in the x and y values from BombGuy's getX() and getY() methods when called by the Runner class
+     * 
+     * @param x     the x-coordinate of the bomb
+     * @param y     the y-coordinate of the bomb
+     */
+
+<span class="fc" id="L54">    public Bomb(int x, int y) {</span>
+        
+<span class="fc" id="L56">        this.x = x;</span>
+<span class="fc" id="L57">        this.y = y;</span>
+
+<span class="fc" id="L59">        this.exploded = false;</span>
+<span class="fc" id="L60">        this.timer = 0;</span>
+
+<span class="fc" id="L62">        this.blockedUp = false;</span>
+<span class="fc" id="L63">        this.blockedDown = false;</span>
+<span class="fc" id="L64">        this.blockedLeft = false;</span>
+<span class="fc" id="L65">        this.blockedRight = false;</span>
+
+<span class="fc" id="L67">        this.blockedUp2 = false;</span>
+<span class="fc" id="L68">        this.blockedDown2 = false;</span>
+<span class="fc" id="L69">        this.blockedLeft2 = false;</span>
+<span class="fc" id="L70">        this.blockedRight2 = false;</span>
+
+<span class="fc" id="L72">        this.setLevel1 = true;</span>
+
+<span class="fc" id="L74">        this.bombRow = (y - 48) / 32;</span>
+<span class="fc" id="L75">        this.bombColumn = x / 32;</span>
+
+<span class="fc" id="L77">        this.individualRow = new ArrayList&lt;String&gt;();</span>
+
+<span class="fc" id="L79">        this.brokenWallUp1 = false;</span>
+<span class="fc" id="L80">        this.brokenWallDown1 = false;</span>
+<span class="fc" id="L81">        this.brokenWallLeft1 = false;</span>
+<span class="fc" id="L82">        this.brokenWallRight1 = false;</span>
+
+<span class="fc" id="L84">        this.brokenWallUp2 = false;</span>
+<span class="fc" id="L85">        this.brokenWallDown2 = false;</span>
+<span class="fc" id="L86">        this.brokenWallLeft2 = false;</span>
+<span class="fc" id="L87">        this.brokenWallRight2 = false;</span>
+
+<span class="fc" id="L89">        this.bombSprite1 = true;</span>
+<span class="fc" id="L90">        this.bombSprite2 = false;</span>
+<span class="fc" id="L91">        this.bombSprite3 = false;</span>
+<span class="fc" id="L92">        this.bombSprite4 = false;</span>
+<span class="fc" id="L93">        this.bombSprite5 = false;</span>
+<span class="fc" id="L94">        this.bombSprite6 = false;</span>
+<span class="fc" id="L95">        this.bombSprite7 = false;</span>
+<span class="fc" id="L96">        this.bombSprite8 = false;</span>
+
+<span class="fc" id="L98">        this.spriteTimer = 0;</span>
+<span class="fc" id="L99">    }</span>
+
+    /**
+     * 
+     * Main method used to update the frame of the bomb
+     * 
+     * Every time this method is called, the timer is incremented by 1 until the bomb detonates, at which point the bomb will check its surroundings for solid and broken walls
+     * 
+     */
+    
+    public void tick() {
+
+<span class="fc" id="L111">        this.timer ++;</span>
+
+<span class="pc bpc" id="L113" title="1 of 4 branches missed.">        if (this.timer &gt; COUNTDOWN * App.FPS &amp;&amp; !exploded) {</span>
+
+<span class="fc" id="L115">            this.timer = 0;</span>
+<span class="fc" id="L116">            exploded = true;</span>
+
+<span class="fc bfc" id="L118" title="All 2 branches covered.">            if (setLevel1) {</span>
+
+<span class="fc" id="L120">                level = levels.getLevel1();</span>
+            }
+
+            else {
+
+<span class="fc" id="L125">                level = levels.getLevel2();</span>
+            }
+
+<span class="fc" id="L128">            String row = level.get(bombRow);</span>
+
+<span class="fc" id="L130">            individualRow = new ArrayList&lt;String&gt;();</span>
+    
+<span class="fc bfc" id="L132" title="All 2 branches covered.">            for (int i = 0; i &lt; row.length(); i++) {</span>
+              
+<span class="fc" id="L134">                Character c = row.charAt(i);</span>
+<span class="fc" id="L135">                String letter = c.toString();</span>
+    
+<span class="fc bfc" id="L137" title="All 6 branches covered.">                if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+    
+<span class="fc" id="L139">                    individualRow.add(letter);</span>
+                }
+    
+                else {
+    
+<span class="fc" id="L144">                    individualRow.add(&quot; &quot;);</span>
+                }
+            }
+    
+<span class="fc bfc" id="L148" title="All 4 branches covered.">            if (individualRow.get(bombColumn - 1).equals(&quot;W&quot;) || individualRow.get(bombColumn - 1).equals(&quot;B&quot;)) {</span>
+    
+<span class="fc" id="L150">                this.blockedLeft = true;</span>
+
+<span class="fc bfc" id="L152" title="All 2 branches covered.">                if (individualRow.get(bombColumn - 1).equals(&quot;B&quot;)) {</span>
+
+<span class="fc" id="L154">                    this.brokenWallLeft1 = true;</span>
+                }
+            }
+
+<span class="fc bfc" id="L158" title="All 2 branches covered.">            if (bombColumn - 2 &gt;= 0) {</span>
+
+<span class="fc bfc" id="L160" title="All 4 branches covered.">                if (individualRow.get(bombColumn - 2).equals(&quot;B&quot;) &amp;&amp; !this.blockedLeft) {</span>
+
+<span class="fc" id="L162">                    this.brokenWallLeft2 = true;</span>
+                }
+
+<span class="fc bfc" id="L165" title="All 6 branches covered.">                if (individualRow.get(bombColumn - 2).equals(&quot;B&quot;) || individualRow.get(bombColumn - 2).equals(&quot;W&quot;) &amp;&amp; !this.blockedLeft) {</span>
+
+<span class="fc" id="L167">                    this.blockedLeft2 = true;</span>
+                }
+            }
+    
+<span class="fc bfc" id="L171" title="All 4 branches covered.">            if (individualRow.get(bombColumn + 1).equals(&quot;W&quot;) || individualRow.get(bombColumn + 1).equals(&quot;B&quot;)) {</span>
+    
+<span class="fc" id="L173">                this.blockedRight = true;</span>
+
+<span class="fc bfc" id="L175" title="All 2 branches covered.">                if (individualRow.get(bombColumn + 1).equals(&quot;B&quot;)) {</span>
+
+<span class="fc" id="L177">                    this.brokenWallRight1 = true;</span>
+                }
+            }
+
+<span class="pc bpc" id="L181" title="1 of 2 branches missed.">            if (bombColumn + 2 &lt; 14) {</span>
+<span class="fc bfc" id="L182" title="All 4 branches covered.">                if (individualRow.get(bombColumn + 2).equals(&quot;B&quot;) &amp;&amp; !this.blockedRight) {</span>
+
+<span class="fc" id="L184">                    this.brokenWallRight2 = true;</span>
+                }
+
+<span class="pc bpc" id="L187" title="3 of 6 branches missed.">                if (individualRow.get(bombColumn + 2).equals(&quot;B&quot;) || individualRow.get(bombColumn + 2).equals(&quot;W&quot;) &amp;&amp; !this.blockedRight) {</span>
+
+<span class="fc" id="L189">                    this.blockedRight2 = true;</span>
+                }
+            }
+
+
+<span class="fc" id="L194">            individualRow = new ArrayList&lt;String&gt;();</span>
+        
+<span class="fc" id="L196">            String rowAbove = level.get(bombRow - 1);</span>
+    
+<span class="fc bfc" id="L198" title="All 2 branches covered.">            for (int i = 0; i &lt; rowAbove.length(); i++) {</span>
+              
+<span class="fc" id="L200">                Character c = rowAbove.charAt(i);</span>
+<span class="fc" id="L201">                String letter = c.toString();</span>
+    
+<span class="pc bpc" id="L203" title="1 of 6 branches missed.">                if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+    
+<span class="fc" id="L205">                    individualRow.add(letter);</span>
+                }
+    
+                else {
+    
+<span class="fc" id="L210">                    individualRow.add(&quot; &quot;);</span>
+                }
+            }
+    
+<span class="fc bfc" id="L214" title="All 4 branches covered.">            if (individualRow.get(bombColumn).equals(&quot;W&quot;) || individualRow.get(bombColumn).equals(&quot;B&quot;)) {</span>
+    
+<span class="fc" id="L216">                this.blockedUp = true;</span>
+
+<span class="fc bfc" id="L218" title="All 2 branches covered.">                if (individualRow.get(bombColumn).equals(&quot;B&quot;)) {</span>
+
+<span class="fc" id="L220">                    this.brokenWallUp1 = true;</span>
+                }
+            }
+
+<span class="fc" id="L224">            individualRow = new ArrayList&lt;String&gt;();</span>
+
+<span class="fc" id="L226">            String rowBelow = level.get(bombRow + 1);</span>
+    
+<span class="fc bfc" id="L228" title="All 2 branches covered.">            for (int i = 0; i &lt; rowBelow.length(); i++) {</span>
+                
+<span class="fc" id="L230">                Character c = rowBelow.charAt(i);</span>
+<span class="fc" id="L231">                String letter = c.toString();</span>
+<span class="fc bfc" id="L232" title="All 6 branches covered.">                if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+    
+<span class="fc" id="L234">                    individualRow.add(letter);</span>
+                }
+    
+                else {
+    
+<span class="fc" id="L239">                    individualRow.add(&quot; &quot;);</span>
+                }
+            }
+    
+<span class="fc bfc" id="L243" title="All 4 branches covered.">            if (individualRow.get(bombColumn).equals(&quot;W&quot;) || individualRow.get(bombColumn).equals(&quot;B&quot;)) {</span>
+    
+<span class="fc" id="L245">                this.blockedDown = true;</span>
+
+<span class="fc bfc" id="L247" title="All 2 branches covered.">                if (individualRow.get(bombColumn).equals(&quot;B&quot;)) {</span>
+
+<span class="fc" id="L249">                    this.brokenWallDown1 = true;</span>
+                }
+            }
+
+<span class="fc bfc" id="L253" title="All 2 branches covered.">            if (bombRow - 2 &gt;= 0) { </span>
+
+<span class="fc" id="L255">                individualRow = new ArrayList&lt;String&gt;();</span>
+        
+<span class="fc" id="L257">                String rowAboveTwo = level.get(bombRow - 2);</span>
+    
+<span class="fc bfc" id="L259" title="All 2 branches covered.">                for (int i = 0; i &lt; rowAboveTwo.length(); i++) {</span>
+              
+<span class="fc" id="L261">                    Character c = rowAboveTwo.charAt(i);</span>
+<span class="fc" id="L262">                    String letter = c.toString();</span>
+    
+<span class="pc bpc" id="L264" title="1 of 6 branches missed.">                    if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+    
+<span class="fc" id="L266">                        individualRow.add(letter);</span>
+                    }
+    
+                    else {
+    
+<span class="fc" id="L271">                        individualRow.add(&quot; &quot;);</span>
+                    }
+                }
+
+<span class="fc bfc" id="L275" title="All 4 branches covered.">                if (individualRow.get(bombColumn).equals(&quot;B&quot;) &amp;&amp; !this.blockedUp) {</span>
+
+<span class="fc" id="L277">                    this.brokenWallUp2 = true;</span>
+                }
+
+<span class="fc bfc" id="L280" title="All 6 branches covered.">                if (individualRow.get(bombColumn).equals(&quot;B&quot;) || individualRow.get(bombColumn).equals(&quot;W&quot;) &amp;&amp; !this.blockedUp) {</span>
+
+<span class="fc" id="L282">                    this.blockedUp2 = true;</span>
+                }
+            }
+
+<span class="fc bfc" id="L286" title="All 2 branches covered.">            if (bombRow + 2 &lt; 12) {</span>
+
+<span class="fc" id="L288">                individualRow = new ArrayList&lt;String&gt;();</span>
+        
+<span class="fc" id="L290">                String rowBelowTwo = level.get(bombRow + 2);</span>
+    
+<span class="fc bfc" id="L292" title="All 2 branches covered.">                for (int i = 0; i &lt; rowBelowTwo.length(); i++) {</span>
+              
+<span class="fc" id="L294">                    Character c = rowBelowTwo.charAt(i);</span>
+<span class="fc" id="L295">                    String letter = c.toString();</span>
+    
+<span class="fc bfc" id="L297" title="All 6 branches covered.">                    if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+    
+<span class="fc" id="L299">                        individualRow.add(letter);</span>
+                    }
+    
+                    else {
+    
+<span class="fc" id="L304">                        individualRow.add(&quot; &quot;);</span>
+                    }
+                }
+
+<span class="fc bfc" id="L308" title="All 4 branches covered.">                if (individualRow.get(bombColumn).equals(&quot;B&quot;) &amp;&amp; !this.blockedDown) {</span>
+
+<span class="fc" id="L310">                    this.brokenWallDown2 = true;</span>
+                }
+
+<span class="pc bpc" id="L313" title="3 of 6 branches missed.">                if (individualRow.get(bombColumn).equals(&quot;B&quot;) || individualRow.get(bombColumn).equals(&quot;W&quot;) &amp;&amp; !this.blockedDown) {</span>
+
+<span class="fc" id="L315">                    this.blockedDown2 = true;</span>
+                }
+            }
+        }
+<span class="fc" id="L319">    }</span>
+
+    /**
+     * Sets the correct sprite appearance of the bomb to display as a graphic in the game, updated by incrementations of the sprite timer
+     */
+
+    public void spriteTick() {
+
+<span class="fc" id="L327">        this.spriteTimer ++;</span>
+
+<span class="fc bfc" id="L329" title="All 2 branches covered.">        if (this.spriteTimer &lt; COUNTDOWN * App.FPS * 0.125) {</span>
+
+<span class="fc" id="L331">            this.bombSprite1 = true;</span>
+        }
+
+<span class="fc bfc" id="L334" title="All 2 branches covered.">        else if (this.spriteTimer &lt; COUNTDOWN * App.FPS * 0.25) {</span>
+
+<span class="fc" id="L336">            this.bombSprite1 = false;</span>
+<span class="fc" id="L337">            this.bombSprite2 = true;</span>
+        }
+
+<span class="fc bfc" id="L340" title="All 2 branches covered.">        else if (this.spriteTimer &lt; COUNTDOWN * App.FPS * 0.375) {</span>
+
+<span class="fc" id="L342">            this.bombSprite2 = false;</span>
+<span class="fc" id="L343">            this.bombSprite3 = true;</span>
+        }
+
+<span class="fc bfc" id="L346" title="All 2 branches covered.">        else if (this.spriteTimer &lt; COUNTDOWN * App.FPS * 0.5) {</span>
+
+<span class="fc" id="L348">            this.bombSprite3 = false;</span>
+<span class="fc" id="L349">            this.bombSprite4 = true;</span>
+        }
+
+<span class="fc bfc" id="L352" title="All 2 branches covered.">        else if (this.spriteTimer &lt; COUNTDOWN * App.FPS * 0.625) {</span>
+
+<span class="fc" id="L354">            this.bombSprite4 = false;</span>
+<span class="fc" id="L355">            this.bombSprite5 = true;</span>
+        }
+
+<span class="fc bfc" id="L358" title="All 2 branches covered.">        else if (this.spriteTimer &lt; COUNTDOWN * App.FPS * 0.75) {</span>
+
+<span class="fc" id="L360">            this.bombSprite5 = false;</span>
+<span class="fc" id="L361">            this.bombSprite6 = true;</span>
+        }
+
+<span class="fc bfc" id="L364" title="All 2 branches covered.">        else if (this.spriteTimer &lt; COUNTDOWN * App.FPS * 0.875) {</span>
+
+<span class="fc" id="L366">            this.bombSprite6 = false;</span>
+<span class="fc" id="L367">            this.bombSprite7 = true;</span>
+        }
+
+<span class="fc bfc" id="L370" title="All 2 branches covered.">        else if (this.spriteTimer &lt; COUNTDOWN * App.FPS) {</span>
+
+<span class="fc" id="L372">            this.bombSprite7 = false;</span>
+<span class="fc" id="L373">            this.bombSprite8 = true;</span>
+        }     
+<span class="fc" id="L375">    }</span>
+
+    /**
+     * Sets the sprite of the explosion from the file loaded in the directory
+     * 
+     * @param sprite    the PImage representation of the graphic
+     * 
+     * @see             IGraphic
+     * @since           1.0
+     */
+
+    public void setSprite(PImage sprite) {
+
+<span class="nc" id="L388">        this.sprite = sprite;</span>
+<span class="nc" id="L389">    }</span>
+
+    /**
+     * Draws the sprite set from the image loaded into the App.java
+     * 
+     * @param app       the App from which the program will run
+     * 
+     * @see             IGraphic
+     * @since           1.0
+     */
+
+    public void draw(PApplet app) {
+
+<span class="nc" id="L402">        app.image(this.sprite, this.x, this.y);</span>
+<span class="nc" id="L403">    }</span>
+
+    /**
+     * Returns true if the bomb is exploded, false otherwise
+     * 
+     * @return      whether the bomb is exploded
+     */
+
+    public boolean isExploded() {
+
+<span class="fc" id="L413">        return this.exploded;</span>
+    }
+
+    /**
+     *  Sets the bomb explosion to true
+     */
+
+    public void detonate() {
+
+<span class="fc" id="L422">        this.exploded = true;</span>
+<span class="fc" id="L423">    }</span>
+
+    /**
+     * Returns the x value of the bomb coordinate
+     * 
+     * @return          the x variable corresponding to the x-value position of the bomb
+     * 
+     * @see             IGraphic
+     * @since           1.0
+     */
+
+    public int getX() {
+
+<span class="fc" id="L436">        return this.x;</span>
+    }
+
+    /**
+     * Returns the y value of the bomb coordinate
+     * 
+     * @return          the y variable corresponding to the y-value position of the bomb
+     * 
+     * @see             IGraphic
+     * @since           1.0
+     */
+
+    public int getY() {
+        
+<span class="fc" id="L450">        return this.y;</span>
+    }
+
+    /**
+     * Return true if the bomb is blocked by left wall directly adjacent, false otherwise
+     * 
+     * @return  whether bomb is blocked by directly adjacent left wall
+     */
+
+    public boolean getBlockedLeft() {
+
+<span class="fc" id="L461">        return this.blockedLeft;</span>
+    }
+
+    /**
+     * Return true if the bomb is blocked by right wall directly adjacent, false otherwise
+     * 
+     * @return  whether bomb is blocked by directly adjacent right wall
+     */
+    
+    public boolean getBlockedRight() {
+
+<span class="fc" id="L472">        return this.blockedRight;</span>
+    }
+
+    /**
+     * Return true if the bomb is blocked by above wall directly adjacent, false otherwise
+     * 
+     * @return  whether bomb is blocked by directly adjacent above wall
+     */
+
+    public boolean getBlockedUp() {
+
+<span class="fc" id="L483">        return this.blockedUp;</span>
+    }
+    
+    /**
+     * Return true if the bomb is blocked by below wall directly adjacent, false otherwise
+     * 
+     * @return  whether bomb is blocked by directly adjacent below wall
+     */
+
+    public boolean getBlockedDown() {
+
+<span class="fc" id="L494">        return this.blockedDown;</span>
+    }
+
+    /**
+     * Return true if the bomb is blocked by a wall 2 tiles to the left, false otherwise
+     * 
+     * @return  whether bomb is blocked by wall 2 tiles left
+     */
+
+    public boolean getBlockedLeft2() {
+
+<span class="fc" id="L505">        return this.blockedLeft2;</span>
+    }
+
+    /**
+     * Return true if the bomb is blocked by a wall 2 tiles to the right, false otherwise
+     * 
+     * @return  whether bomb is blocked by wall 2 tiles right
+     */
+
+    public boolean getBlockedRight2() {
+
+<span class="fc" id="L516">        return this.blockedRight2;</span>
+    }
+
+    /**
+     * Return true if the bomb is blocked by a wall 2 tiles above, false otherwise
+     * 
+     * @return  whether bomb is blocked by wall 2 tiles above
+     */
+
+    public boolean getBlockedUp2() {
+
+<span class="fc" id="L527">        return this.blockedUp2;</span>
+    }
+
+    /**
+     * Return true if the bomb is blocked by a wall 2 tiles below, false otherwise
+     * 
+     * @return  whether bomb is blocked by wall 2 tiles below
+     */
+
+    public boolean getBlockedDown2() {
+
+<span class="fc" id="L538">        return this.blockedDown2;</span>
+    }
+
+    /**
+     * Return true if there is broken wall directly above bomb, false otherwise
+     * 
+     * @return  whether there is broken wall directly above bomb
+     */
+
+    public boolean getBrokenWallUp1() {
+
+<span class="fc" id="L549">        return this.brokenWallUp1;</span>
+    }
+
+    /**
+     * Return true if there is broken wall directly below bomb, false otherwise
+     * 
+     * @return  whether there is broken wall directly below bomb
+     */
+
+    public boolean getBrokenWallDown1() {
+
+<span class="fc" id="L560">        return this.brokenWallDown1;</span>
+    }
+
+    /**
+     * Return true if there is broken wall directly to the left of bomb, false otherwise
+     * 
+     * @return  whether there is broken wall directly left of bomb
+     */
+
+    public boolean getBrokenWallLeft1() {
+
+<span class="fc" id="L571">        return this.brokenWallLeft1;</span>
+    }
+
+    /**
+     * Return true if there is broken wall directly to the right of bomb, false otherwise
+     * 
+     * @return  whether there is broken wall directly right of bomb
+     */
+
+    public boolean getBrokenWallRight1() {
+
+<span class="fc" id="L582">        return this.brokenWallRight1;</span>
+    }
+
+    /** 
+     * Return true if there is broken wall 2 tiles above bomb, false otherwise
+     * 
+     * @return  whether there is broken wall 2 tiles above bomb
+    */
+
+    public boolean getBrokenWallUp2() {
+
+<span class="fc" id="L593">        return this.brokenWallUp2;</span>
+    }
+
+    /** 
+     * Return true if there is broken wall 2 tiles below bomb, false otherwise
+     * 
+     * @return  whether there is broken wall 2 tiles below bomb
+    */
+
+    public boolean getBrokenWallDown2() {
+
+<span class="fc" id="L604">        return this.brokenWallDown2;</span>
+    }
+
+    /** 
+     * Return true if there is broken wall 2 tiles to the left of bomb, false otherwise
+     * 
+     * @return  whether there is broken wall 2 tiles left of bomb
+    */
+
+    public boolean getBrokenWallLeft2() {
+
+<span class="fc" id="L615">        return this.brokenWallLeft2;</span>
+    }
+
+    /** 
+     * Return true if there is broken wall 2 tiles to the right of bomb, false otherwise
+     * 
+     * @return  whether there is broken wall 2 tiles right of bomb
+    */   
+    public boolean getBrokenWallRight2() {
+
+<span class="fc" id="L625">        return this.brokenWallRight2;</span>
+    }
+
+    /**
+     * Return true if bomb is in sprite position 1, false otherwise
+     * 
+     * @return  whether bomb is in sprite position 1
+     */
+
+    public boolean getBombSprite1() {
+
+<span class="fc" id="L636">        return this.bombSprite1;</span>
+    }
+
+    /**
+     * Return true if bomb is in sprite position 2, false otherwise
+     * 
+     * @return  whether bomb is in sprite position 2
+     */
+
+    public boolean getBombSprite2() {
+
+<span class="fc" id="L647">        return this.bombSprite2;</span>
+    }
+
+    /**
+     * Return true if bomb is in sprite position 3, false otherwise
+     * 
+     * @return  whether bomb is in sprite position 3
+     */
+
+    public boolean getBombSprite3() {
+
+<span class="fc" id="L658">        return this.bombSprite3;</span>
+    }
+
+    /**
+     * Return true if bomb is in sprite position 4, false otherwise
+     * 
+     * @return  whether bomb is in sprite position 4
+     */
+
+    public boolean getBombSprite4() {
+
+<span class="fc" id="L669">        return this.bombSprite4;</span>
+    }
+
+    /**
+     * Return true if bomb is in sprite position 5, false otherwise
+     * 
+     * @return  whether bomb is in sprite position 5
+     */
+
+    public boolean getBombSprite5() {
+
+<span class="fc" id="L680">        return this.bombSprite5;</span>
+    }
+
+    /**
+     * Return true if bomb is in sprite position 6, false otherwise
+     * 
+     * @return  whether bomb is in sprite position 6
+     */
+
+    public boolean getBombSprite6() {
+
+<span class="fc" id="L691">        return this.bombSprite6;</span>
+    }
+
+    /**
+     * Return true if bomb is in sprite position 7, false otherwise
+     * 
+     * @return  whether bomb is in sprite position 7
+     */
+
+    public boolean getBombSprite7() {
+
+<span class="fc" id="L702">        return this.bombSprite7;</span>
+    }
+    
+    /**
+     * Return true if bomb is in sprite position 8, false otherwise
+     * 
+     * @return  whether bomb is in sprite position 8
+     */
+
+    public boolean getBombSprite8() {
+
+<span class="fc" id="L713">        return this.bombSprite8;</span>
+    }
+
+    /**
+     * Set game to level 2 and update bomb interactions accordingly
+     */
+
+    public void nextLevel() {
+
+<span class="fc" id="L722">        this.setLevel1 = false;</span>
+<span class="fc" id="L723">    }</span>
+
+    /**
+     * Update the map after bomb destroys a broken wall
+     * 
+     * @param x     the x-coordinate of the broken wall
+     * @param y     the y-coordinate of the broken wall
+     */
+
+    public void updateMap(int x, int y) {
+
+<span class="fc bfc" id="L734" title="All 2 branches covered.">        if (setLevel1) {</span>
+
+<span class="fc" id="L736">            ArrayList&lt;String&gt; level1 = levels.getLevel1();</span>
+
+<span class="fc" id="L738">            level = levels.replaceBrokenWall(level1, x, y);</span>
+<span class="fc" id="L739">        }</span>
+
+        else {
+
+<span class="fc" id="L743">            ArrayList&lt;String&gt; level2 = levels.getLevel2();</span>
+
+<span class="fc" id="L745">            level = levels.replaceBrokenWall(level2, x, y);</span>
+        }
+<span class="fc" id="L747">    }</span>
+
+    /**
+     * Resets the map to its state at the start of the game
+     */
+
+    public void resetMap() {
+
+<span class="fc bfc" id="L755" title="All 2 branches covered.">        if (setLevel1) {</span>
+
+<span class="fc" id="L757">            ArrayList&lt;String&gt; level1 = levels.getLevel1();</span>
+
+<span class="fc" id="L759">            levels.resetLevel1(level1);</span>
+<span class="fc" id="L760">        }</span>
+
+        else {
+
+<span class="fc" id="L764">            ArrayList&lt;String&gt; level2 = levels.getLevel2();</span>
+
+<span class="fc" id="L766">            levels.resetLevel2(level2);</span>
+        }
+<span class="fc" id="L768">    }</span>
+
+
+    /**
+     * ONLY USED FOR TESTING
+     */
+
+    //  ONLY USED FOR TESTING
+
+    public void setBrokenWallDown2() {
+
+<span class="fc" id="L779">        this.brokenWallDown2 = true;</span>
+<span class="fc" id="L780">    }</span>
+
+
+    /**
+     * ONLY USED FOR TESTING
+     */
+
+    //  ONLY USED FOR TESTING
+
+    public void setBrokenWallUp2() {
+
+<span class="fc" id="L791">        this.brokenWallUp2 = true;</span>
+<span class="fc" id="L792">    }</span>
+    
+
+    /**
+     * ONLY USED FOR TESTING
+     */
+
+    //  ONLY USED FOR TESTING
+
+    public void setBrokenWallLeft2() {
+
+<span class="fc" id="L803">        this.brokenWallLeft2 = true;</span>
+<span class="fc" id="L804">    }</span>
+
+
+    /**
+     * ONLY USED FOR TESTING
+     */
+
+    //  ONLY USED FOR TESTING
+
+    public void setBrokenWallRight2() {
+
+<span class="fc" id="L815">        this.brokenWallRight2 = true;</span>
+<span class="fc" id="L816">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

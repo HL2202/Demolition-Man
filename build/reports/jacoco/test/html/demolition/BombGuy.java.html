@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BombGuy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demolition</a> &gt; <a href="index.source.html" class="el_package">demolition</a> &gt; <span class="el_source">BombGuy.java</span></div><h1>BombGuy.java</h1><pre class="source lang-java linenums">/**
+ * BombGuy is the object controlled directly by the player
+ * 
+ * It is the main character in the game, who is able to move left, move right, move up, move down and deploy bombs based on player contro;
+ * 
+ * BombGuy extends from the parent class Figure and inherits all of its methods, and it implements the interface IUserControllable
+ * 
+ * @author  Harry Li
+ * @version %I%, %G%
+ * @since   1.0
+ */
+
+
+package demolition;
+
+import processing.core.PImage;
+import processing.core.PApplet;
+import java.util.ArrayList;
+
+import demolition.DynamicMatrix;
+import demolition.IUserControllable;
+
+
+public class BombGuy extends Figure implements IUserControllable{
+
+
+<span class="fc" id="L27">    private DynamicMatrix levels = new DynamicMatrix();</span>
+<span class="fc" id="L28">    private ArrayList&lt;String&gt; level1 = levels.getLevel1();</span>
+<span class="fc" id="L29">    private ArrayList&lt;String&gt; level2 = levels.getLevel2();</span>
+
+    private ArrayList&lt;String&gt; individualRow;
+
+    private boolean deployBomb, setLevel1, setLevel2;
+
+    private int bombGuyRow, bombGuyColumn;
+    private String currentRow;
+
+    private PImage sprite;
+
+    /**
+     * Creates a new bomb guy object which will be instantiated based on the runner class, where the object's control and methods are run
+     * 
+     * @param x     the x-coordinate where bomb guy is created
+     * @param y     the y-coordinate where bomb guy is created
+     * 
+     * @see             Figure
+     * @see             IUserControllable
+     * @since           1.0
+     */
+
+
+    public BombGuy(int x, int y) {
+        
+<span class="fc" id="L54">        super(x, y);</span>
+
+<span class="fc" id="L56">        this.deployBomb = false;</span>
+
+<span class="fc" id="L58">        this.bombGuyRow = 1;</span>
+<span class="fc" id="L59">        this.bombGuyColumn = 1;</span>
+
+<span class="fc" id="L61">        this.currentRow = level1.get(bombGuyRow);</span>
+<span class="fc" id="L62">        this.individualRow = new ArrayList&lt;String&gt;();</span>
+
+<span class="fc" id="L64">        this.setLevel1 = true;</span>
+<span class="fc" id="L65">        this.setLevel2 = false;</span>
+<span class="fc" id="L66">    }</span>
+
+    /**
+     * 
+     * Updates the map according to any changes made by the player's actions, including loading level 2, reset of level 1 and level 2 and replacing broken walls
+     * 
+     * @see             Figure
+     * @see             IUserControllable
+     */
+
+    public void tick() {
+
+<span class="fc bfc" id="L78" title="All 4 branches covered.">        if (replace &amp;&amp; setLevel1) {</span>
+
+<span class="fc" id="L80">            level1 = levels.replaceBrokenWall(level1, replaceX, replaceY);</span>
+<span class="fc" id="L81">            replace = false;</span>
+        }
+
+<span class="pc bpc" id="L84" title="1 of 4 branches missed.">        else if (replace &amp;&amp; setLevel2) {</span>
+
+<span class="fc" id="L86">            level2 = levels.replaceBrokenWall(level2, replaceX, replaceY);</span>
+<span class="fc" id="L87">            replace = false;</span>
+        }
+
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (setLevel1) {</span>
+
+<span class="fc" id="L92">            level1 = levels.getLevel1();</span>
+<span class="fc" id="L93">            currentRow = level1.get(bombGuyRow);</span>
+
+<span class="fc bfc" id="L95" title="All 2 branches covered.">            if (reset) {</span>
+
+<span class="fc" id="L97">                levels.resetLevel1(level1);</span>
+<span class="fc" id="L98">                this.x = 32;</span>
+<span class="fc" id="L99">                this.y = 80;</span>
+
+<span class="fc" id="L101">                this.bombGuyRow = 1;</span>
+<span class="fc" id="L102">                this.bombGuyColumn = 1;</span>
+
+<span class="fc" id="L104">                this.moveDown = true;</span>
+<span class="fc" id="L105">                this.moveLeft = false;</span>
+<span class="fc" id="L106">                this.moveRight = false;</span>
+<span class="fc" id="L107">                this.moveUp = false;</span>
+<span class="fc" id="L108">                this.spriteTimer = 0;</span>
+
+<span class="fc" id="L110">                reset = false;</span>
+            }
+        }
+
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">        else if (setLevel2) {</span>
+
+<span class="fc" id="L116">            level2 = levels.getLevel2();</span>
+<span class="fc" id="L117">            currentRow = level2.get(bombGuyRow);</span>
+
+<span class="fc bfc" id="L119" title="All 2 branches covered.">            if (reset) {</span>
+
+<span class="fc" id="L121">                levels.resetLevel2(level2);</span>
+<span class="fc" id="L122">                this.x = 32;</span>
+<span class="fc" id="L123">                this.y = 240;</span>
+
+<span class="fc" id="L125">                this.bombGuyRow = 6;</span>
+<span class="fc" id="L126">                this.bombGuyColumn = 1;</span>
+
+<span class="fc" id="L128">                this.moveDown = true;</span>
+<span class="fc" id="L129">                this.moveLeft = false;</span>
+<span class="fc" id="L130">                this.moveRight = false;</span>
+<span class="fc" id="L131">                this.moveUp = false;</span>
+<span class="fc" id="L132">                this.spriteTimer = 0;</span>
+
+<span class="fc" id="L134">                reset = false;</span>
+            }
+        }
+<span class="fc" id="L137">    }</span>
+
+    /**
+     * 
+     * Moves bomb guy one tile left if there is an empty tile available in the position, otherwise it keeps bomb guy in its current position
+     * 
+     * Also makes changes to the bomb guy's movement direction
+     * 
+     * @see             IUserControllable
+     */
+
+    public void pressLeft() {
+
+<span class="fc" id="L150">        moveDown = false;</span>
+<span class="fc" id="L151">        moveLeft = true;</span>
+<span class="fc" id="L152">        moveUp = false;</span>
+<span class="fc" id="L153">        moveRight = false;</span>
+
+<span class="fc bfc" id="L155" title="All 2 branches covered.">        if (setLevel1) {</span>
+
+<span class="fc" id="L157">            level1 = levels.getLevel1();</span>
+
+<span class="fc" id="L159">            String row = level1.get(bombGuyRow);</span>
+
+<span class="fc bfc" id="L161" title="All 2 branches covered.">            for (int i = 0; i &lt; row.length(); i++) {</span>
+          
+<span class="fc" id="L163">                Character c = row.charAt(i);</span>
+<span class="fc" id="L164">                String letter = c.toString();</span>
+
+<span class="fc bfc" id="L166" title="All 6 branches covered.">                if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+
+<span class="fc" id="L168">                    individualRow.add(letter);</span>
+                }
+
+                else {
+
+<span class="fc" id="L173">                    individualRow.add(&quot; &quot;);</span>
+                }
+            }
+
+<span class="fc bfc" id="L177" title="All 4 branches covered.">            if (individualRow.get(bombGuyColumn - 1).equals(&quot;W&quot;) || individualRow.get(bombGuyColumn - 1).equals(&quot;B&quot;)) {</span>
+
+<span class="fc" id="L179">                individualRow = new ArrayList&lt;String&gt;();</span>
+            }
+
+            else {
+
+<span class="fc" id="L184">                this.x -= 32;</span>
+<span class="fc" id="L185">                bombGuyColumn --;</span>
+<span class="fc" id="L186">                individualRow = new ArrayList&lt;String&gt;();</span>
+            }
+<span class="fc" id="L188">        }</span>
+
+<span class="pc bpc" id="L190" title="1 of 2 branches missed.">        else if (setLevel2) {</span>
+
+<span class="fc" id="L192">            level2 = levels.getLevel2();</span>
+
+<span class="fc" id="L194">            String row = level2.get(bombGuyRow);</span>
+
+<span class="fc bfc" id="L196" title="All 2 branches covered.">            for (int i = 0; i &lt; row.length(); i++) {</span>
+          
+<span class="fc" id="L198">                Character c = row.charAt(i);</span>
+<span class="fc" id="L199">                String letter = c.toString();</span>
+
+<span class="fc bfc" id="L201" title="All 6 branches covered.">                if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+
+<span class="fc" id="L203">                    individualRow.add(letter);</span>
+                }
+
+                else {
+
+<span class="fc" id="L208">                    individualRow.add(&quot; &quot;);</span>
+                }
+            }
+
+<span class="pc bpc" id="L212" title="1 of 4 branches missed.">            if (individualRow.get(bombGuyColumn - 1).equals(&quot;W&quot;) || individualRow.get(bombGuyColumn - 1).equals(&quot;B&quot;)) {</span>
+
+<span class="fc" id="L214">                individualRow = new ArrayList&lt;String&gt;();</span>
+            }
+
+            else {
+
+<span class="fc" id="L219">                this.x -= 32;</span>
+<span class="fc" id="L220">                bombGuyColumn --;</span>
+<span class="fc" id="L221">                individualRow = new ArrayList&lt;String&gt;();</span>
+            }
+        }
+<span class="fc" id="L224">    }</span>
+
+    /**
+     * 
+     * Moves bomb guy one tile right if there is an empty tile available in the position, otherwise it keeps bomb guy in its current position
+     * 
+     * Also makes changes to the bomb guy's movement direction
+     * 
+     * @see             IUserControllable
+     */
+
+    public void pressRight() {
+
+<span class="fc" id="L237">        moveDown = false;</span>
+<span class="fc" id="L238">        moveLeft = false;</span>
+<span class="fc" id="L239">        moveUp = false;</span>
+<span class="fc" id="L240">        moveRight = true;</span>
+
+<span class="fc bfc" id="L242" title="All 2 branches covered.">        if (setLevel1) {</span>
+
+<span class="fc" id="L244">            level1 = levels.getLevel1();</span>
+
+<span class="fc" id="L246">            String row = level1.get(bombGuyRow);</span>
+
+<span class="fc bfc" id="L248" title="All 2 branches covered.">            for (int i = 0; i &lt; row.length(); i++) {</span>
+          
+<span class="fc" id="L250">                Character c = row.charAt(i);</span>
+<span class="fc" id="L251">                String letter = c.toString();</span>
+
+<span class="fc bfc" id="L253" title="All 6 branches covered.">                if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+
+<span class="fc" id="L255">                    individualRow.add(letter);</span>
+                }
+
+                else {
+
+<span class="fc" id="L260">                    individualRow.add(&quot; &quot;);</span>
+                }
+            }
+
+<span class="fc bfc" id="L264" title="All 4 branches covered.">            if (individualRow.get(bombGuyColumn + 1).equals(&quot;W&quot;) || individualRow.get(bombGuyColumn + 1).equals(&quot;B&quot;)) {</span>
+
+<span class="fc" id="L266">                individualRow = new ArrayList&lt;String&gt;();</span>
+            }
+
+            else {
+
+<span class="fc" id="L271">                this.x += 32;</span>
+<span class="fc" id="L272">                bombGuyColumn ++;</span>
+<span class="fc" id="L273">                individualRow = new ArrayList&lt;String&gt;();</span>
+            }
+<span class="fc" id="L275">        }</span>
+
+<span class="pc bpc" id="L277" title="1 of 2 branches missed.">        else if (setLevel2) {</span>
+
+<span class="fc" id="L279">            level2 = levels.getLevel2();</span>
+
+<span class="fc" id="L281">            String row = level2.get(bombGuyRow);</span>
+
+<span class="fc bfc" id="L283" title="All 2 branches covered.">            for (int i = 0; i &lt; row.length(); i++) {</span>
+          
+<span class="fc" id="L285">                Character c = row.charAt(i);</span>
+<span class="fc" id="L286">                String letter = c.toString();</span>
+
+<span class="fc bfc" id="L288" title="All 6 branches covered.">                if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+
+<span class="fc" id="L290">                    individualRow.add(letter);</span>
+                }
+
+                else {
+
+<span class="fc" id="L295">                    individualRow.add(&quot; &quot;);</span>
+                }
+            }
+
+<span class="pc bpc" id="L299" title="1 of 4 branches missed.">            if (individualRow.get(bombGuyColumn + 1).equals(&quot;W&quot;) || individualRow.get(bombGuyColumn + 1).equals(&quot;B&quot;)) {</span>
+
+<span class="fc" id="L301">                individualRow = new ArrayList&lt;String&gt;();</span>
+            }
+
+            else { 
+
+<span class="fc" id="L306">                this.x += 32;</span>
+<span class="fc" id="L307">                bombGuyColumn ++;</span>
+<span class="fc" id="L308">                individualRow = new ArrayList&lt;String&gt;();</span>
+            }
+        }
+<span class="fc" id="L311">    }</span>
+
+    /**
+     * 
+     * Moves bomb guy one tile up if there is an empty tile available in the position, otherwise it keeps bomb guy in its current position
+     * 
+     * Also makes changes to the bomb guy's movement direction
+     * 
+     * @see             IUserControllable
+     */
+
+    public void pressUp() {
+
+<span class="fc" id="L324">        moveDown = false;</span>
+<span class="fc" id="L325">        moveLeft = false;</span>
+<span class="fc" id="L326">        moveUp = true;</span>
+<span class="fc" id="L327">        moveRight = false;</span>
+
+<span class="fc bfc" id="L329" title="All 2 branches covered.">        if (setLevel1) {</span>
+
+<span class="fc" id="L331">            level1 = levels.getLevel1();</span>
+        
+<span class="fc" id="L333">            String rowAbove = level1.get(bombGuyRow - 1);</span>
+
+<span class="fc bfc" id="L335" title="All 2 branches covered.">            for (int i = 0; i &lt; rowAbove.length(); i++) {</span>
+          
+<span class="fc" id="L337">                Character c = rowAbove.charAt(i);</span>
+<span class="fc" id="L338">                String letter = c.toString();</span>
+
+<span class="pc bpc" id="L340" title="1 of 6 branches missed.">                if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+
+<span class="fc" id="L342">                    individualRow.add(letter);</span>
+                }
+
+                else {
+
+<span class="fc" id="L347">                    individualRow.add(&quot; &quot;);</span>
+                }
+            }
+
+<span class="fc bfc" id="L351" title="All 4 branches covered.">            if (individualRow.get(bombGuyColumn).equals(&quot;W&quot;) || individualRow.get(bombGuyColumn).equals(&quot;B&quot;)) {</span>
+
+<span class="fc" id="L353">                individualRow = new ArrayList&lt;String&gt;();</span>
+            }
+
+            else {
+
+<span class="fc" id="L358">                this.y -= 32;</span>
+<span class="fc" id="L359">                bombGuyRow --;</span>
+<span class="fc" id="L360">                individualRow = new ArrayList&lt;String&gt;();</span>
+            }
+
+        }
+<span class="fc" id="L364">    }</span>
+
+    /**
+     * 
+     * Moves bomb guy one tile down if there is an empty tile available in the position, otherwise it keeps bomb guy in its current position
+     * 
+     * Also makes changes to the bomb guy's movement direction
+     * 
+     * @see             IUserControllable
+     */
+
+    public void pressDown() {
+
+<span class="fc" id="L377">        moveDown = true;</span>
+<span class="fc" id="L378">        moveLeft = false;</span>
+<span class="fc" id="L379">        moveUp = false;</span>
+<span class="fc" id="L380">        moveRight = false;</span>
+
+<span class="fc bfc" id="L382" title="All 2 branches covered.">        if (setLevel1) {</span>
+      
+<span class="fc" id="L384">            level1 = levels.getLevel1();</span>
+
+<span class="fc" id="L386">            String rowBelow = level1.get(bombGuyRow + 1);</span>
+
+<span class="fc bfc" id="L388" title="All 2 branches covered.">            for (int i = 0; i &lt; rowBelow.length(); i++) {</span>
+            
+<span class="fc" id="L390">                Character c = rowBelow.charAt(i);</span>
+<span class="fc" id="L391">                String letter = c.toString();</span>
+<span class="fc bfc" id="L392" title="All 6 branches covered.">                if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+
+<span class="fc" id="L394">                    individualRow.add(letter);</span>
+                }
+
+                else {
+
+<span class="fc" id="L399">                    individualRow.add(&quot; &quot;);</span>
+                }
+            }
+
+<span class="fc bfc" id="L403" title="All 4 branches covered.">            if (individualRow.get(bombGuyColumn).equals(&quot;W&quot;) || individualRow.get(bombGuyColumn).equals(&quot;B&quot;)) {</span>
+
+<span class="fc" id="L405">                individualRow = new ArrayList&lt;String&gt;();</span>
+            }
+
+            else {
+
+<span class="fc" id="L410">                this.y += 32;</span>
+<span class="fc" id="L411">                bombGuyRow ++;</span>
+<span class="fc" id="L412">                individualRow = new ArrayList&lt;String&gt;();</span>
+            }
+        }
+<span class="fc" id="L415">    }</span>
+
+    /**
+     * Deploys a bomb at the position of bomb guy's current coordinates
+     * 
+     * @see             IUserControllable
+     */
+
+    public void pressSpace() {
+
+<span class="pc bpc" id="L425" title="1 of 2 branches missed.">        if (!deployBomb) {</span>
+
+<span class="fc" id="L427">            this.deployBomb = true;</span>
+        }
+<span class="fc" id="L429">    }</span>
+
+    /**
+     * Returns true if a bomb is ready to be deployed, false otherwise
+     * 
+     * @return  whether a bbomb is ready to be deployed
+     * 
+     * @see             IUserControllable
+     */
+
+    public boolean bombReady() {
+
+<span class="fc" id="L441">        return deployBomb;</span>
+    }
+
+
+    /**
+     * Sets the bomb deploy boolean to be false to indicate the bomb has been deployed
+     * 
+     * @see             IUserControllable
+     */
+
+    public void bombDeployed() {
+
+<span class="fc" id="L453">        this.deployBomb = false;</span>
+<span class="fc" id="L454">    }</span>
+
+    /**
+     * 
+     * Sets bomb guy's map to be the second level
+     * 
+     * @see             IUserControllable
+     */
+
+    public void nextLevel() {
+        
+<span class="fc" id="L465">        this.setLevel1 = false;</span>
+<span class="fc" id="L466">        this.setLevel2 = true;</span>
+        
+<span class="fc" id="L468">        this.bombGuyRow = 6;</span>
+<span class="fc" id="L469">        this.bombGuyColumn = 1;</span>
+<span class="fc" id="L470">    }</span>
+
+
+    /**
+     * 
+     * Returns true if bomb guy is in level 1, false otherwise
+     * 
+     * @return  true if bomb guy is in level 1
+     * 
+     * @see             IUserControllable
+     */
+
+    public boolean getSetLevel1() {
+        
+<span class="fc" id="L484">        return this.setLevel1;</span>
+    }
+
+
+        /**
+     * 
+     * Sets bomb guy's map to be the second level
+     * 
+     * Returns true if bomb guy is in level 2, false otherwise
+     * 
+     * @return  true if bomb guy is in level 2
+     * 
+     * @see             IUserControllable
+     */
+
+    public boolean getSetLevel2() {
+        
+<span class="fc" id="L501">        return this.setLevel2;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,784 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>App.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demolition</a> &gt; <a href="index.source.html" class="el_package">demolition</a> &gt; <span class="el_source">App.java</span></div><h1>App.java</h1><pre class="source lang-java linenums">/**
+ * App is the functional main class used to run the program
+ * 
+ * It integrates all of the other classes and methods into the construction of the game, which is loaded in the program to be played
+ *
+ * @author  Harry Li
+ * @version %I%, %G%
+ * @since   1.0
+ */
+
+package demolition;
+
+import processing.core.PApplet;
+import processing.core.PImage;
+import processing.core.PFont;
+import java.util.ArrayList;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+
+
+public class App extends PApplet {
+
+
+    public static final int WIDTH = 480;
+    public static final int HEIGHT = 480;
+
+    public static final int FPS = 60;
+
+    private Wall wall;
+
+    private int xTracker;
+
+    private PFont font;
+
+    private Runner runner;
+
+    private Clock clock;
+
+    private Player player;
+
+    private YellowEnemy yellowEnemy;
+
+    private RedEnemy redEnemy;
+
+    private BombGuy bombGuy;
+
+    private Lives lives;
+
+    private Bomb bomb;
+
+    private Time time;
+
+    private DynamicMatrix levels;
+
+    private EndScreen endScreen;
+
+    private Explosion explosion;
+    
+    /**
+    * 
+    * Loads in the app by creating a new Runner class object, which is the key helper class used to run the program
+    */
+
+<span class="nc" id="L64">    public App() {</span>
+
+<span class="nc" id="L66">        this.xTracker = 0;</span>
+<span class="nc" id="L67">        this.runner = new Runner();</span>
+<span class="nc" id="L68">    }</span>
+
+    /**
+     * Sets the width and height of the game screen
+     */
+
+    public void settings() {
+
+<span class="nc" id="L76">        size(WIDTH, HEIGHT);</span>
+<span class="nc" id="L77">    }</span>
+
+    /**
+     * Set up all of the objects appropriately in the game and load their sprites according to the image stored in folder
+     */
+
+    public void setup() {
+
+<span class="nc" id="L85">        frameRate(FPS);</span>
+
+<span class="nc" id="L87">        this.clock = runner.getClock();</span>
+<span class="nc" id="L88">        this.player = runner.getPlayer();</span>
+<span class="nc" id="L89">        this.yellowEnemy = runner.getYellowEnemy();</span>
+<span class="nc" id="L90">        this.redEnemy = runner.getRedEnemy();</span>
+<span class="nc" id="L91">        this.bombGuy = runner.getBombGuy();</span>
+<span class="nc" id="L92">        this.lives = runner.getLives();</span>
+<span class="nc" id="L93">        this.levels = runner.getLevels();</span>
+           
+<span class="nc" id="L95">        this.clock.setSprite(this.loadImage(&quot;src/main/resources/icons/clock.png&quot;));</span>
+<span class="nc" id="L96">        player.setSprite(this.loadImage(&quot;src/main/resources/icons/player.png&quot;));</span>
+
+<span class="nc" id="L98">        yellowEnemy.setSprite(this.loadImage(&quot;src/main/resources/yellow_enemy/yellow_down1.png&quot;));</span>
+<span class="nc" id="L99">        redEnemy.setSprite(this.loadImage(&quot;src/main/resources/red_enemy/red_down1.png&quot;));</span>
+<span class="nc" id="L100">        bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player1.png&quot;));</span>
+
+<span class="nc" id="L102">        this.font = lives.createFont(this, &quot;src/main/resources/PressStart2P-Regular.ttf&quot;);</span>
+<span class="nc" id="L103">    }</span>
+
+    /**
+     * Runs the program by calling the run() method from the runner class and drawing all of the objects according to the frame updates by the runner class
+     */
+
+    public void draw() {
+
+<span class="nc" id="L111">        background(220, 120, 25);</span>
+
+<span class="nc" id="L113">        this.runner.run();</span>
+
+<span class="nc" id="L115">        this.clock = runner.getClock();</span>
+<span class="nc" id="L116">        this.player = runner.getPlayer();</span>
+<span class="nc" id="L117">        this.yellowEnemy = runner.getYellowEnemy();</span>
+<span class="nc" id="L118">        this.redEnemy = runner.getRedEnemy();</span>
+<span class="nc" id="L119">        this.bombGuy = runner.getBombGuy();</span>
+<span class="nc" id="L120">        this.lives = runner.getLives();</span>
+<span class="nc" id="L121">        this.bomb = runner.getBomb();</span>
+<span class="nc" id="L122">        this.time = runner.getTime();</span>
+<span class="nc" id="L123">        this.explosion = runner.getExplosion();</span>
+
+<span class="nc bnc" id="L125" title="All 4 branches missed.">        if (!runner.getGameOver() &amp;&amp; runner.getSetLevel1()) {</span>
+       
+<span class="nc" id="L127">            int yTracker = 64;</span>
+
+<span class="nc" id="L129">            this.clock.draw(this);</span>
+<span class="nc" id="L130">            player.draw(this);</span>
+
+<span class="nc" id="L132">            this.textFont(createFont(&quot;src/main/resources/PressStart2P-Regular.ttf&quot;, 25), 25);</span>
+<span class="nc" id="L133">            lives.fill(this);</span>
+<span class="nc" id="L134">            lives.text(this);</span>
+<span class="nc" id="L135">            lives.textSize(this);</span>
+
+<span class="nc" id="L137">            time.tick();</span>
+<span class="nc" id="L138">            time.text(this);</span>
+<span class="nc" id="L139">            time.fill(this);</span>
+<span class="nc" id="L140">            time.textSize(this);</span>
+
+<span class="nc" id="L142">            ArrayList&lt;String&gt; level1 = runner.getFirstLevel();</span>
+            
+<span class="nc bnc" id="L144" title="All 2 branches missed.">            for (String row: level1) {</span>
+
+<span class="nc bnc" id="L146" title="All 2 branches missed.">                for (int i = 0; i &lt; row.length(); i ++) {</span>
+                
+<span class="nc" id="L148">                    Character c = row.charAt(i);</span>
+<span class="nc" id="L149">                    String letter = c.toString();</span>
+
+<span class="nc bnc" id="L151" title="All 2 branches missed.">                    if (letter.equals(&quot;W&quot;)) {</span>
+
+<span class="nc" id="L153">                        this.wall = new Wall(xTracker, yTracker);</span>
+<span class="nc" id="L154">                        this.wall.setSprite(this.loadImage(&quot;src/main/resources/wall/solid.png&quot;));</span>
+<span class="nc" id="L155">                        this.wall.draw(this);</span>
+                    }
+
+<span class="nc bnc" id="L158" title="All 2 branches missed.">                    else if (letter.equals(&quot;B&quot;)) {</span>
+
+<span class="nc" id="L160">                        this.wall = new Wall(xTracker, yTracker);</span>
+<span class="nc" id="L161">                        this.wall.setSprite(this.loadImage(&quot;src/main/resources/broken/broken.png&quot;));</span>
+<span class="nc" id="L162">                        this.wall.draw(this);</span>
+                    }
+
+<span class="nc bnc" id="L165" title="All 2 branches missed.">                    else if (letter.equals(&quot;G&quot;)) {</span>
+
+<span class="nc" id="L167">                        this.wall = new Wall(xTracker, yTracker);</span>
+<span class="nc" id="L168">                        this.wall.setSprite(this.loadImage(&quot;src/main/resources/goal/goal.png&quot;));</span>
+<span class="nc" id="L169">                        this.wall.draw(this);</span>
+                    }
+
+                    else {
+
+<span class="nc" id="L174">                        this.wall = new Wall(xTracker, yTracker);</span>
+<span class="nc" id="L175">                        this.wall.setSprite(this.loadImage(&quot;src/main/resources/empty/empty.png&quot;));</span>
+<span class="nc" id="L176">                        this.wall.draw(this);</span>
+                    }
+<span class="nc" id="L178">                    xTracker += 32;</span>
+                }
+<span class="nc" id="L180">                xTracker = 0;</span>
+<span class="nc" id="L181">                yTracker += 32;</span>
+<span class="nc" id="L182">            }</span>
+
+            
+<span class="nc bnc" id="L185" title="All 2 branches missed.">            if (bombGuy.getDownSprite1()) {</span>
+<span class="nc" id="L186">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player1.png&quot;));</span>
+            } 
+        
+<span class="nc bnc" id="L189" title="All 2 branches missed.">            else if (bombGuy.getDownSprite2()) {</span>
+<span class="nc" id="L190">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player2.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L193" title="All 2 branches missed.">            else if (bombGuy.getDownSprite3()) {</span>
+<span class="nc" id="L194">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player3.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L197" title="All 2 branches missed.">            else if (bombGuy.getDownSprite4()) {</span>
+<span class="nc" id="L198">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player4.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L201" title="All 2 branches missed.">            else if (bombGuy.getRightSprite1()) {</span>
+<span class="nc" id="L202">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_right1.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L205" title="All 2 branches missed.">            else if (bombGuy.getRightSprite2()) {</span>
+<span class="nc" id="L206">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_right2.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L209" title="All 2 branches missed.">            else if (bombGuy.getRightSprite3()) {</span>
+<span class="nc" id="L210">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_right3.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L213" title="All 2 branches missed.">            else if (bombGuy.getRightSprite4()) {</span>
+<span class="nc" id="L214">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_right4.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L217" title="All 2 branches missed.">            else if (bombGuy.getUpSprite1()) {</span>
+<span class="nc" id="L218">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_up1.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L221" title="All 2 branches missed.">            else if (bombGuy.getUpSprite2()) {</span>
+<span class="nc" id="L222">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_up2.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L225" title="All 2 branches missed.">            else if (bombGuy.getUpSprite3()) {</span>
+<span class="nc" id="L226">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_up3.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L229" title="All 2 branches missed.">            else if (bombGuy.getUpSprite4()) {</span>
+<span class="nc" id="L230">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_up4.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L233" title="All 2 branches missed.">            else if (bombGuy.getLeftSprite1()) {</span>
+<span class="nc" id="L234">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_left1.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L237" title="All 2 branches missed.">            else if (bombGuy.getLeftSprite2()) {</span>
+<span class="nc" id="L238">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_left2.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L241" title="All 2 branches missed.">            else if (bombGuy.getLeftSprite3()) {</span>
+<span class="nc" id="L242">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_left3.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L245" title="All 2 branches missed.">            else if (bombGuy.getLeftSprite4()) {</span>
+<span class="nc" id="L246">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_left4.png&quot;));</span>
+            }
+
+
+<span class="nc bnc" id="L250" title="All 2 branches missed.">            if (yellowEnemy.getDownSprite1()) {</span>
+<span class="nc" id="L251">                yellowEnemy.setSprite(this.loadImage(&quot;src/main/resources/yellow_enemy/yellow_down1.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L254" title="All 2 branches missed.">            else if (yellowEnemy.getDownSprite2()) {</span>
+<span class="nc" id="L255">                yellowEnemy.setSprite(this.loadImage(&quot;src/main/resources/yellow_enemy/yellow_down2.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L258" title="All 2 branches missed.">            else if (yellowEnemy.getDownSprite3()) {</span>
+<span class="nc" id="L259">                yellowEnemy.setSprite(this.loadImage(&quot;src/main/resources/yellow_enemy/yellow_down3.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L262" title="All 2 branches missed.">            else if (yellowEnemy.getDownSprite4()) {</span>
+<span class="nc" id="L263">                yellowEnemy.setSprite(this.loadImage(&quot;src/main/resources/yellow_enemy/yellow_down4.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L266" title="All 2 branches missed.">            else if (yellowEnemy.getRightSprite1()) {</span>
+<span class="nc" id="L267">                yellowEnemy.setSprite(this.loadImage(&quot;src/main/resources/yellow_enemy/yellow_right1.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L270" title="All 2 branches missed.">            else if (yellowEnemy.getRightSprite2()) {</span>
+<span class="nc" id="L271">                yellowEnemy.setSprite(this.loadImage(&quot;src/main/resources/yellow_enemy/yellow_right2.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L274" title="All 2 branches missed.">            else if (yellowEnemy.getRightSprite3()) {</span>
+<span class="nc" id="L275">                yellowEnemy.setSprite(this.loadImage(&quot;src/main/resources/yellow_enemy/yellow_right3.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L278" title="All 2 branches missed.">            else if (yellowEnemy.getRightSprite4()) {</span>
+<span class="nc" id="L279">                yellowEnemy.setSprite(this.loadImage(&quot;src/main/resources/yellow_enemy/yellow_right4.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L282" title="All 2 branches missed.">            else if (yellowEnemy.getUpSprite1()) {</span>
+<span class="nc" id="L283">                yellowEnemy.setSprite(this.loadImage(&quot;src/main/resources/yellow_enemy/yellow_up1.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L286" title="All 2 branches missed.">            else if (yellowEnemy.getUpSprite2()) {</span>
+<span class="nc" id="L287">                yellowEnemy.setSprite(this.loadImage(&quot;src/main/resources/yellow_enemy/yellow_up2.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L290" title="All 2 branches missed.">            else if (yellowEnemy.getUpSprite3()) {</span>
+<span class="nc" id="L291">                yellowEnemy.setSprite(this.loadImage(&quot;src/main/resources/yellow_enemy/yellow_up3.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L294" title="All 2 branches missed.">            else if (yellowEnemy.getUpSprite4()) {</span>
+<span class="nc" id="L295">                yellowEnemy.setSprite(this.loadImage(&quot;src/main/resources/yellow_enemy/yellow_up4.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L298" title="All 2 branches missed.">            else if (yellowEnemy.getLeftSprite1()) {</span>
+<span class="nc" id="L299">                yellowEnemy.setSprite(this.loadImage(&quot;src/main/resources/yellow_enemy/yellow_left1.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L302" title="All 2 branches missed.">            else if (yellowEnemy.getLeftSprite2()) {</span>
+<span class="nc" id="L303">                yellowEnemy.setSprite(this.loadImage(&quot;src/main/resources/yellow_enemy/yellow_left2.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L306" title="All 2 branches missed.">            else if (yellowEnemy.getLeftSprite3()) {</span>
+<span class="nc" id="L307">                yellowEnemy.setSprite(this.loadImage(&quot;src/main/resources/yellow_enemy/yellow_left3.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L310" title="All 2 branches missed.">            else if (yellowEnemy.getLeftSprite4()) {</span>
+<span class="nc" id="L311">                yellowEnemy.setSprite(this.loadImage(&quot;src/main/resources/yellow_enemy/yellow_left4.png&quot;));</span>
+            }
+
+
+<span class="nc bnc" id="L315" title="All 2 branches missed.">            if (redEnemy.getDownSprite1()) {</span>
+<span class="nc" id="L316">                redEnemy.setSprite(this.loadImage(&quot;src/main/resources/red_enemy/red_down1.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L319" title="All 2 branches missed.">            else if (redEnemy.getDownSprite2()) {</span>
+<span class="nc" id="L320">                redEnemy.setSprite(this.loadImage(&quot;src/main/resources/red_enemy/red_down2.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L323" title="All 2 branches missed.">            else if (redEnemy.getDownSprite3()) {</span>
+<span class="nc" id="L324">                redEnemy.setSprite(this.loadImage(&quot;src/main/resources/red_enemy/red_down3.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L327" title="All 2 branches missed.">            else if (redEnemy.getDownSprite4()) {</span>
+<span class="nc" id="L328">                redEnemy.setSprite(this.loadImage(&quot;src/main/resources/red_enemy/red_down4.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L331" title="All 2 branches missed.">            else if (redEnemy.getRightSprite1()) {</span>
+<span class="nc" id="L332">                redEnemy.setSprite(this.loadImage(&quot;src/main/resources/red_enemy/red_right1.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L335" title="All 2 branches missed.">            else if (redEnemy.getRightSprite2()) {</span>
+<span class="nc" id="L336">                redEnemy.setSprite(this.loadImage(&quot;src/main/resources/red_enemy/red_right2.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L339" title="All 2 branches missed.">            else if (redEnemy.getRightSprite3()) {</span>
+<span class="nc" id="L340">                redEnemy.setSprite(this.loadImage(&quot;src/main/resources/red_enemy/red_right3.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L343" title="All 2 branches missed.">            else if (redEnemy.getRightSprite4()) {</span>
+<span class="nc" id="L344">                redEnemy.setSprite(this.loadImage(&quot;src/main/resources/red_enemy/red_right4.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L347" title="All 2 branches missed.">            else if (redEnemy.getUpSprite1()) {</span>
+<span class="nc" id="L348">                redEnemy.setSprite(this.loadImage(&quot;src/main/resources/red_enemy/red_up1.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L351" title="All 2 branches missed.">            else if (redEnemy.getUpSprite2()) {</span>
+<span class="nc" id="L352">                redEnemy.setSprite(this.loadImage(&quot;src/main/resources/red_enemy/red_up2.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L355" title="All 2 branches missed.">            else if (redEnemy.getUpSprite3()) {</span>
+<span class="nc" id="L356">                redEnemy.setSprite(this.loadImage(&quot;src/main/resources/red_enemy/red_up3.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L359" title="All 2 branches missed.">            else if (redEnemy.getUpSprite4()) {</span>
+<span class="nc" id="L360">                redEnemy.setSprite(this.loadImage(&quot;src/main/resources/red_enemy/red_up4.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L363" title="All 2 branches missed.">            else if (redEnemy.getLeftSprite1()) {</span>
+<span class="nc" id="L364">                redEnemy.setSprite(this.loadImage(&quot;src/main/resources/red_enemy/red_left1.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L367" title="All 2 branches missed.">            else if (redEnemy.getLeftSprite2()) {</span>
+<span class="nc" id="L368">                redEnemy.setSprite(this.loadImage(&quot;src/main/resources/red_enemy/red_left2.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L371" title="All 2 branches missed.">            else if (redEnemy.getLeftSprite3()) {</span>
+<span class="nc" id="L372">                redEnemy.setSprite(this.loadImage(&quot;src/main/resources/red_enemy/red_left3.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L375" title="All 2 branches missed.">            else if (redEnemy.getLeftSprite4()) {</span>
+<span class="nc" id="L376">                redEnemy.setSprite(this.loadImage(&quot;src/main/resources/red_enemy/red_left4.png&quot;));</span>
+            }
+
+
+<span class="nc" id="L380">            bombGuy.draw(this);</span>
+
+<span class="nc bnc" id="L382" title="All 2 branches missed.">            if (!yellowEnemy.isRemoved()) {</span>
+
+<span class="nc" id="L384">                yellowEnemy.draw(this);</span>
+            }
+
+<span class="nc bnc" id="L387" title="All 2 branches missed.">            if (!redEnemy.isRemoved()) {</span>
+
+<span class="nc" id="L389">                redEnemy.draw(this);</span>
+            }
+
+<span class="nc bnc" id="L392" title="All 4 branches missed.">            if (runner.getBombMade() &amp;&amp; !bomb.isExploded()) {</span>
+
+<span class="nc bnc" id="L394" title="All 2 branches missed.">                if (bomb.getBombSprite1()) {</span>
+<span class="nc" id="L395">                    bomb.setSprite(this.loadImage(&quot;src/main/resources/bomb/bomb1.png&quot;));</span>
+                }
+
+<span class="nc bnc" id="L398" title="All 2 branches missed.">                else if (bomb.getBombSprite2()) {</span>
+<span class="nc" id="L399">                    bomb.setSprite(this.loadImage(&quot;src/main/resources/bomb/bomb2.png&quot;));</span>
+                }
+
+<span class="nc bnc" id="L402" title="All 2 branches missed.">                else if (bomb.getBombSprite3()) {</span>
+<span class="nc" id="L403">                    bomb.setSprite(this.loadImage(&quot;src/main/resources/bomb/bomb3.png&quot;));</span>
+                }
+
+<span class="nc bnc" id="L406" title="All 2 branches missed.">                else if (bomb.getBombSprite4()) {</span>
+<span class="nc" id="L407">                    bomb.setSprite(this.loadImage(&quot;src/main/resources/bomb/bomb4.png&quot;));</span>
+                }
+
+<span class="nc bnc" id="L410" title="All 2 branches missed.">                else if (bomb.getBombSprite5()) {</span>
+<span class="nc" id="L411">                    bomb.setSprite(this.loadImage(&quot;src/main/resources/bomb/bomb5.png&quot;));</span>
+                }
+
+<span class="nc bnc" id="L414" title="All 2 branches missed.">                else if (bomb.getBombSprite6()) {</span>
+<span class="nc" id="L415">                    bomb.setSprite(this.loadImage(&quot;src/main/resources/bomb/bomb6.png&quot;));</span>
+                }
+
+<span class="nc bnc" id="L418" title="All 2 branches missed.">                else if (bomb.getBombSprite7()) {</span>
+<span class="nc" id="L419">                    bomb.setSprite(this.loadImage(&quot;src/main/resources/bomb/bomb7.png&quot;));</span>
+                }
+
+<span class="nc bnc" id="L422" title="All 2 branches missed.">                else if (bomb.getBombSprite8()) {</span>
+<span class="nc" id="L423">                    bomb.setSprite(this.loadImage(&quot;src/main/resources/bomb/bomb8.png&quot;));</span>
+                }
+
+<span class="nc" id="L426">                bomb.draw(this);</span>
+            }
+
+<span class="nc bnc" id="L429" title="All 2 branches missed.">            if (runner.getExplosionStart()) {</span>
+
+<span class="nc" id="L431">                Explosion explosion1 = this.explosion;</span>
+<span class="nc" id="L432">                Explosion explosion2 = this.explosion;</span>
+<span class="nc" id="L433">                Explosion explosion3 = this.explosion;</span>
+<span class="nc" id="L434">                Explosion explosion4 = this.explosion;</span>
+<span class="nc" id="L435">                Explosion explosion5 = this.explosion;</span>
+
+<span class="nc" id="L437">                Explosion explosion6 = this.explosion;</span>
+<span class="nc" id="L438">                Explosion explosion7 = this.explosion;</span>
+<span class="nc" id="L439">                Explosion explosion8 = this.explosion;</span>
+<span class="nc" id="L440">                Explosion explosion9 = this.explosion;</span>
+
+<span class="nc" id="L442">                explosion1.setSprite(this.loadImage(&quot;src/main/resources/explosion/centre.png&quot;));</span>
+<span class="nc" id="L443">                explosion1.draw(this, explosion.getX(), explosion.getY());</span>
+
+<span class="nc bnc" id="L445" title="All 2 branches missed.">                if (!this.bomb.getBlockedRight()) {</span>
+
+<span class="nc" id="L447">                    explosion2.setSprite(this.loadImage(&quot;src/main/resources/explosion/horizontal.png&quot;));</span>
+<span class="nc" id="L448">                    explosion2.draw(this, explosion.getX() + 32, explosion.getY());</span>
+                }
+
+<span class="nc bnc" id="L451" title="All 2 branches missed.">                if (!this.bomb.getBlockedLeft()) {</span>
+
+<span class="nc" id="L453">                    explosion3.setSprite(this.loadImage(&quot;src/main/resources/explosion/horizontal.png&quot;));</span>
+<span class="nc" id="L454">                    explosion3.draw(this, explosion.getX() - 32, explosion.getY());</span>
+                }
+
+<span class="nc bnc" id="L457" title="All 2 branches missed.">                if (!this.bomb.getBlockedUp()) {</span>
+
+<span class="nc" id="L459">                    explosion4.setSprite(this.loadImage(&quot;src/main/resources/explosion/vertical.png&quot;));</span>
+<span class="nc" id="L460">                    explosion4.draw(this, explosion.getX(), explosion.getY() - 32);</span>
+                }
+
+<span class="nc bnc" id="L463" title="All 2 branches missed.">                if (!this.bomb.getBlockedDown()) {</span>
+
+<span class="nc" id="L465">                    explosion5.setSprite(this.loadImage(&quot;src/main/resources/explosion/vertical.png&quot;));</span>
+<span class="nc" id="L466">                    explosion5.draw(this, explosion.getX(), explosion.getY() + 32);</span>
+                }
+
+<span class="nc bnc" id="L469" title="All 4 branches missed.">                if (!this.bomb.getBlockedRight2() &amp;&amp; !this.bomb.getBlockedRight()) {</span>
+
+<span class="nc" id="L471">                    explosion6.setSprite(this.loadImage(&quot;src/main/resources/explosion/horizontal.png&quot;));</span>
+<span class="nc" id="L472">                    explosion6.draw(this, explosion.getX() + 64, explosion.getY());</span>
+                }
+
+<span class="nc bnc" id="L475" title="All 4 branches missed.">                if (!this.bomb.getBlockedLeft2() &amp;&amp; !this.bomb.getBlockedLeft()) {</span>
+
+<span class="nc" id="L477">                    explosion7.setSprite(this.loadImage(&quot;src/main/resources/explosion/horizontal.png&quot;));</span>
+<span class="nc" id="L478">                    explosion7.draw(this, explosion.getX() - 64, explosion.getY());</span>
+                }
+
+<span class="nc bnc" id="L481" title="All 4 branches missed.">                if (!this.bomb.getBlockedUp2() &amp;&amp; !this.bomb.getBlockedUp()) {</span>
+
+<span class="nc" id="L483">                    explosion8.setSprite(this.loadImage(&quot;src/main/resources/explosion/vertical.png&quot;));</span>
+<span class="nc" id="L484">                    explosion8.draw(this, explosion.getX(), explosion.getY() - 64);</span>
+                }
+
+<span class="nc bnc" id="L487" title="All 4 branches missed.">                if (!this.bomb.getBlockedDown2() &amp;&amp; !this.bomb.getBlockedDown()) {</span>
+
+<span class="nc" id="L489">                    explosion9.setSprite(this.loadImage(&quot;src/main/resources/explosion/vertical.png&quot;));</span>
+<span class="nc" id="L490">                    explosion9.draw(this, explosion.getX(), explosion.getY() + 64);</span>
+                }
+            }
+<span class="nc" id="L493">        }</span>
+
+<span class="nc bnc" id="L495" title="All 4 branches missed.">        else if (!runner.getGameOver() &amp;&amp; runner.getSetLevel2()) {</span>
+
+<span class="nc" id="L497">            this.bombGuy = runner.getBombGuy();</span>
+
+<span class="nc" id="L499">            int yTracker = 64;</span>
+<span class="nc" id="L500">            this.xTracker = 0;</span>
+
+<span class="nc" id="L502">            clock.draw(this);</span>
+<span class="nc" id="L503">            player.draw(this);</span>
+            
+<span class="nc" id="L505">            this.textFont(createFont(&quot;src/main/resources/PressStart2P-Regular.ttf&quot;, 25), 25);</span>
+<span class="nc" id="L506">            lives.fill(this);</span>
+<span class="nc" id="L507">            lives.textSize(this);</span>
+<span class="nc" id="L508">            lives.text(this);</span>
+
+<span class="nc" id="L510">            time.tick();</span>
+<span class="nc" id="L511">            time.text(this);</span>
+<span class="nc" id="L512">            time.fill(this);</span>
+<span class="nc" id="L513">            time.textSize(this);</span>
+
+<span class="nc" id="L515">            ArrayList&lt;String&gt; level2 = runner.getSecondLevel();</span>
+
+<span class="nc bnc" id="L517" title="All 2 branches missed.">            for (String row: level2) {</span>
+
+<span class="nc bnc" id="L519" title="All 2 branches missed.">                for (int i = 0; i &lt; row.length(); i ++) {</span>
+                
+<span class="nc" id="L521">                    Character c = row.charAt(i);</span>
+<span class="nc" id="L522">                    String letter = c.toString();</span>
+                    
+<span class="nc bnc" id="L524" title="All 2 branches missed.">                    if (letter.equals(&quot;W&quot;)) {</span>
+
+<span class="nc" id="L526">                        this.wall = new Wall(xTracker, yTracker);</span>
+<span class="nc" id="L527">                        this.wall.setSprite(this.loadImage(&quot;src/main/resources/wall/solid.png&quot;));</span>
+<span class="nc" id="L528">                        this.wall.draw(this);</span>
+                    }
+
+<span class="nc bnc" id="L531" title="All 2 branches missed.">                    else if (letter.equals(&quot;B&quot;)) {</span>
+
+<span class="nc" id="L533">                        this.wall = new Wall(xTracker, yTracker);</span>
+<span class="nc" id="L534">                        this.wall.setSprite(this.loadImage(&quot;src/main/resources/broken/broken.png&quot;));</span>
+<span class="nc" id="L535">                        this.wall.draw(this);</span>
+                    }
+
+<span class="nc bnc" id="L538" title="All 2 branches missed.">                    else if (letter.equals(&quot;G&quot;)) {</span>
+
+<span class="nc" id="L540">                        this.wall = new Wall(xTracker, yTracker);</span>
+<span class="nc" id="L541">                        this.wall.setSprite(this.loadImage(&quot;src/main/resources/goal/goal.png&quot;));</span>
+<span class="nc" id="L542">                        this.wall.draw(this);</span>
+                    }
+
+                    else {
+
+<span class="nc" id="L547">                        this.wall = new Wall(xTracker, yTracker);</span>
+<span class="nc" id="L548">                        this.wall.setSprite(this.loadImage(&quot;src/main/resources/empty/empty.png&quot;));</span>
+<span class="nc" id="L549">                        this.wall.draw(this);</span>
+                    }
+<span class="nc" id="L551">                    xTracker += 32;</span>
+                }
+<span class="nc" id="L553">                xTracker = 0;</span>
+<span class="nc" id="L554">                yTracker += 32;</span>
+<span class="nc" id="L555">            }</span>
+
+<span class="nc bnc" id="L557" title="All 2 branches missed.">            if (bombGuy.getDownSprite1()) {</span>
+<span class="nc" id="L558">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player1.png&quot;));</span>
+            } 
+        
+<span class="nc bnc" id="L561" title="All 2 branches missed.">            else if (bombGuy.getDownSprite2()) {</span>
+<span class="nc" id="L562">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player2.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L565" title="All 2 branches missed.">            else if (bombGuy.getDownSprite3()) {</span>
+<span class="nc" id="L566">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player3.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L569" title="All 2 branches missed.">            else if (bombGuy.getDownSprite4()) {</span>
+<span class="nc" id="L570">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player4.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L573" title="All 2 branches missed.">            else if (bombGuy.getRightSprite1()) {</span>
+<span class="nc" id="L574">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_right1.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L577" title="All 2 branches missed.">            else if (bombGuy.getRightSprite2()) {</span>
+<span class="nc" id="L578">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_right2.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L581" title="All 2 branches missed.">            else if (bombGuy.getRightSprite3()) {</span>
+<span class="nc" id="L582">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_right3.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L585" title="All 2 branches missed.">            else if (bombGuy.getRightSprite4()) {</span>
+<span class="nc" id="L586">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_right4.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L589" title="All 2 branches missed.">            else if (bombGuy.getUpSprite1()) {</span>
+<span class="nc" id="L590">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_up1.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L593" title="All 2 branches missed.">            else if (bombGuy.getUpSprite2()) {</span>
+<span class="nc" id="L594">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_up2.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L597" title="All 2 branches missed.">            else if (bombGuy.getUpSprite3()) {</span>
+<span class="nc" id="L598">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_up3.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L601" title="All 2 branches missed.">            else if (bombGuy.getUpSprite4()) {</span>
+<span class="nc" id="L602">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_up4.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L605" title="All 2 branches missed.">            else if (bombGuy.getLeftSprite1()) {</span>
+<span class="nc" id="L606">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_left1.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L609" title="All 2 branches missed.">            else if (bombGuy.getLeftSprite2()) {</span>
+<span class="nc" id="L610">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_left2.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L613" title="All 2 branches missed.">            else if (bombGuy.getLeftSprite3()) {</span>
+<span class="nc" id="L614">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_left3.png&quot;));</span>
+            }
+
+<span class="nc bnc" id="L617" title="All 2 branches missed.">            else if (bombGuy.getLeftSprite4()) {</span>
+<span class="nc" id="L618">                bombGuy.setSprite(this.loadImage(&quot;src/main/resources/player/player_left4.png&quot;));</span>
+            }
+            
+<span class="nc" id="L621">            this.bombGuy.draw(this);</span>
+
+<span class="nc bnc" id="L623" title="All 4 branches missed.">            if (runner.getBombMade() &amp;&amp; !bomb.isExploded()) {</span>
+
+<span class="nc bnc" id="L625" title="All 2 branches missed.">                if (bomb.getBombSprite1()) {</span>
+<span class="nc" id="L626">                    bomb.setSprite(this.loadImage(&quot;src/main/resources/bomb/bomb1.png&quot;));</span>
+                }
+
+<span class="nc bnc" id="L629" title="All 2 branches missed.">                else if (bomb.getBombSprite2()) {</span>
+<span class="nc" id="L630">                    bomb.setSprite(this.loadImage(&quot;src/main/resources/bomb/bomb2.png&quot;));</span>
+                }
+
+<span class="nc bnc" id="L633" title="All 2 branches missed.">                else if (bomb.getBombSprite3()) {</span>
+<span class="nc" id="L634">                    bomb.setSprite(this.loadImage(&quot;src/main/resources/bomb/bomb3.png&quot;));</span>
+                }
+
+<span class="nc bnc" id="L637" title="All 2 branches missed.">                else if (bomb.getBombSprite4()) {</span>
+<span class="nc" id="L638">                    bomb.setSprite(this.loadImage(&quot;src/main/resources/bomb/bomb4.png&quot;));</span>
+                }
+
+<span class="nc bnc" id="L641" title="All 2 branches missed.">                else if (bomb.getBombSprite5()) {</span>
+<span class="nc" id="L642">                    bomb.setSprite(this.loadImage(&quot;src/main/resources/bomb/bomb5.png&quot;));</span>
+                }
+
+<span class="nc bnc" id="L645" title="All 2 branches missed.">                else if (bomb.getBombSprite6()) {</span>
+<span class="nc" id="L646">                    bomb.setSprite(this.loadImage(&quot;src/main/resources/bomb/bomb6.png&quot;));</span>
+                }
+
+<span class="nc bnc" id="L649" title="All 2 branches missed.">                else if (bomb.getBombSprite7()) {</span>
+<span class="nc" id="L650">                    bomb.setSprite(this.loadImage(&quot;src/main/resources/bomb/bomb7.png&quot;));</span>
+                }
+
+<span class="nc bnc" id="L653" title="All 2 branches missed.">                else if (bomb.getBombSprite8()) {</span>
+<span class="nc" id="L654">                    bomb.setSprite(this.loadImage(&quot;src/main/resources/bomb/bomb8.png&quot;));</span>
+                }
+                
+<span class="nc" id="L657">                bomb.draw(this);</span>
+            }
+
+<span class="nc bnc" id="L660" title="All 2 branches missed.">            if (runner.getExplosionStart()) {</span>
+
+<span class="nc" id="L662">                Explosion explosion1 = this.explosion;</span>
+<span class="nc" id="L663">                Explosion explosion2 = this.explosion;</span>
+<span class="nc" id="L664">                Explosion explosion3 = this.explosion;</span>
+<span class="nc" id="L665">                Explosion explosion4 = this.explosion;</span>
+<span class="nc" id="L666">                Explosion explosion5 = this.explosion;</span>
+
+<span class="nc" id="L668">                Explosion explosion6 = this.explosion;</span>
+<span class="nc" id="L669">                Explosion explosion7 = this.explosion;</span>
+<span class="nc" id="L670">                Explosion explosion8 = this.explosion;</span>
+<span class="nc" id="L671">                Explosion explosion9 = this.explosion;</span>
+
+<span class="nc" id="L673">                explosion1.setSprite(this.loadImage(&quot;src/main/resources/explosion/centre.png&quot;));</span>
+<span class="nc" id="L674">                explosion1.draw(this, explosion.getX(), explosion.getY());</span>
+
+<span class="nc bnc" id="L676" title="All 2 branches missed.">                if (!this.bomb.getBlockedRight()) {</span>
+
+<span class="nc" id="L678">                    explosion2.setSprite(this.loadImage(&quot;src/main/resources/explosion/horizontal.png&quot;));</span>
+<span class="nc" id="L679">                    explosion2.draw(this, explosion.getX() + 32, explosion.getY());</span>
+                }
+
+<span class="nc bnc" id="L682" title="All 2 branches missed.">                if (!this.bomb.getBlockedLeft()) {</span>
+
+<span class="nc" id="L684">                    explosion3.setSprite(this.loadImage(&quot;src/main/resources/explosion/horizontal.png&quot;));</span>
+<span class="nc" id="L685">                    explosion3.draw(this, explosion.getX() - 32, explosion.getY());</span>
+                }
+
+<span class="nc bnc" id="L688" title="All 2 branches missed.">                if (!this.bomb.getBlockedUp()) {</span>
+
+<span class="nc" id="L690">                    explosion4.setSprite(this.loadImage(&quot;src/main/resources/explosion/vertical.png&quot;));</span>
+<span class="nc" id="L691">                    explosion4.draw(this, explosion.getX(), explosion.getY() - 32);</span>
+                }
+
+<span class="nc bnc" id="L694" title="All 2 branches missed.">                if (!this.bomb.getBlockedDown()) {</span>
+
+<span class="nc" id="L696">                    explosion5.setSprite(this.loadImage(&quot;src/main/resources/explosion/vertical.png&quot;));</span>
+<span class="nc" id="L697">                    explosion5.draw(this, explosion.getX(), explosion.getY() + 32);</span>
+                }
+
+<span class="nc bnc" id="L700" title="All 4 branches missed.">                if (!this.bomb.getBlockedRight2() &amp;&amp; !this.bomb.getBlockedRight()) {</span>
+
+<span class="nc" id="L702">                    explosion6.setSprite(this.loadImage(&quot;src/main/resources/explosion/horizontal.png&quot;));</span>
+<span class="nc" id="L703">                    explosion6.draw(this, explosion.getX() + 64, explosion.getY());</span>
+                }
+
+<span class="nc bnc" id="L706" title="All 4 branches missed.">                if (!this.bomb.getBlockedLeft2() &amp;&amp; !this.bomb.getBlockedLeft()) {</span>
+
+<span class="nc" id="L708">                    explosion7.setSprite(this.loadImage(&quot;src/main/resources/explosion/horizontal.png&quot;));</span>
+<span class="nc" id="L709">                    explosion7.draw(this, explosion.getX() - 64, explosion.getY());</span>
+                }
+
+<span class="nc bnc" id="L712" title="All 4 branches missed.">                if (!this.bomb.getBlockedUp2() &amp;&amp; !this.bomb.getBlockedUp()) {</span>
+
+<span class="nc" id="L714">                    explosion8.setSprite(this.loadImage(&quot;src/main/resources/explosion/vertical.png&quot;));</span>
+<span class="nc" id="L715">                    explosion8.draw(this, explosion.getX(), explosion.getY() - 64);</span>
+                }
+
+<span class="nc bnc" id="L718" title="All 4 branches missed.">                if (!this.bomb.getBlockedDown2() &amp;&amp; !this.bomb.getBlockedDown()) {</span>
+
+<span class="nc" id="L720">                    explosion9.setSprite(this.loadImage(&quot;src/main/resources/explosion/vertical.png&quot;));</span>
+<span class="nc" id="L721">                    explosion9.draw(this, explosion.getX(), explosion.getY() + 64);</span>
+                }
+            }
+<span class="nc" id="L724">        }</span>
+
+<span class="nc bnc" id="L726" title="All 2 branches missed.">        else if (runner.getWinGame()) {</span>
+
+<span class="nc" id="L728">            this.endScreen = new EndScreen(165, 210, &quot;YOU WIN&quot;);</span>
+<span class="nc" id="L729">            this.endScreen.text(this);</span>
+<span class="nc" id="L730">            this.endScreen.textFont(this.createFont(&quot;PressStart2P-Regular.ttf&quot;, 20), 20);</span>
+<span class="nc" id="L731">            this.endScreen.fill(this);</span>
+<span class="nc" id="L732">            this.endScreen.textSize(this);</span>
+        }
+
+        else {
+
+<span class="nc" id="L737">            this.endScreen = new EndScreen(150, 210, &quot;GAME OVER&quot;);</span>
+<span class="nc" id="L738">            this.endScreen.text(this);</span>
+<span class="nc" id="L739">            this.endScreen.textFont(this.createFont(&quot;PressStart2P-Regular.ttf&quot;, 20), 20);</span>
+<span class="nc" id="L740">            this.endScreen.fill(this);</span>
+<span class="nc" id="L741">            this.endScreen.textSize(this);</span>
+        }
+      
+<span class="nc" id="L744">    }</span>
+
+    /**
+     * Feeds a specific key value pressed by the user into the runner program to control the movements in the game
+     */
+    
+    public void keyReleased() {
+
+<span class="nc bnc" id="L752" title="All 2 branches missed.">        if (this.keyCode == 37) {</span>
+
+<span class="nc" id="L754">            this.runner.keyLeft();</span>
+        } 
+        
+<span class="nc bnc" id="L757" title="All 2 branches missed.">        else if (this.keyCode == 39) {</span>
+
+<span class="nc" id="L759">            this.runner.keyRight();</span>
+        }
+        
+<span class="nc bnc" id="L762" title="All 2 branches missed.">        else if (this.keyCode == 38) {</span>
+
+<span class="nc" id="L764">            this.runner.keyUp();</span>
+        }
+        
+<span class="nc bnc" id="L767" title="All 2 branches missed.">        else if (this.keyCode == 40) {</span>
+
+<span class="nc" id="L769">            this.runner.keyDown();</span>
+        }
+
+<span class="nc bnc" id="L772" title="All 2 branches missed.">        else if (this.keyCode == 32) {</span>
+
+<span class="nc" id="L774">            this.runner.keySpace();</span>
+        }
+<span class="nc" id="L776">    }</span>
+
+
+    public static void main(String[] args) {
+
+<span class="nc" id="L781">        PApplet.main(&quot;demolition.App&quot;);</span>
+<span class="nc" id="L782">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

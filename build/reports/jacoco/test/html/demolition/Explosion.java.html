@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Explosion.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demolition</a> &gt; <a href="index.source.html" class="el_package">demolition</a> &gt; <span class="el_source">Explosion.java</span></div><h1>Explosion.java</h1><pre class="source lang-java linenums">/**
+ * 
+ * Explosion class creates the explosion graphic which will be displayed in the map when a bomb is detonated
+ * 
+ * The explosion object handles the graphics of displaying the explsion, with the Runner class handling the frame updates of the explosion
+ * 
+ * @author  Harry Li
+ * @version %I%, %G%
+ * @since   1.0
+ */
+
+
+package demolition;
+
+import processing.core.PImage;
+import processing.core.PApplet;
+import demolition.Icons;
+
+public class Explosion extends Icons {
+
+    private PImage sprite;
+
+    /**
+     * Creates a new explosion object which extends from all of the attributes and methods from the Icons super class, including setSprite(), draw(), getX() and getY().
+     * 
+     * @param x     the x-coordinate of the explosion
+     * @param y     the y-coordinate of the explosion
+     * 
+     * @see         Icons
+     * @since       1.0
+     */
+
+    public Explosion(int x, int y) {
+
+<span class="fc" id="L35">        super(x, y);</span>
+<span class="fc" id="L36">    }</span>
+
+
+    /**
+     * Sets the sprite of the explosion from the file loaded in the directory
+     * 
+     * @param sprite    the PImage representation of the graphic
+     */
+
+    public void setSprite(PImage sprite) {
+
+<span class="nc" id="L47">        this.sprite = sprite;</span>
+<span class="nc" id="L48">    }</span>
+
+    /**
+     * Draw method overrides the existing draw() method defined in the Icons super class, 
+     * so the explosion can set its display coordinates in the horizontal and vertical directions in adjacent tiles
+     * 
+     * @param app   the App from which the program will run
+     * @param x     the x-coordinate where the explosion will be displayed
+     * @param y     the y-coordinate where the explosion will be displayed
+     */
+
+    public void draw(PApplet app, int x, int y) {
+
+<span class="nc" id="L61">        app.image(this.sprite, x, y);</span>
+<span class="nc" id="L62">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

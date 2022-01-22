@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Figure.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demolition</a> &gt; <a href="index.source.html" class="el_package">demolition</a> &gt; <span class="el_source">Figure.java</span></div><h1>Figure.java</h1><pre class="source lang-java linenums">/**
+ * 
+ * Figure is an abstract super class object which forms the class base for all dynamic objects: Enemy, RedEnemy, and YellowEnemy
+ * 
+ * These dynamic objects are objects that will  change their appearance/position based on gameplay and is updated with each frame
+ * 
+ * The figure class extends from the IGraphic interface, which is the mother class for all graphics related classes and will implement methods to be used by its sub-class
+ * 
+ * @author  Harry Li
+ * @version %I%, %G%
+ * @since   1.0
+ */
+
+
+package demolition;
+
+import processing.core.PImage;
+import processing.core.PApplet;
+
+import demolition.IGraphic;
+
+
+public abstract class Figure implements IGraphic {
+
+    protected int x, y, spriteTimer, replaceX, replaceY;
+    
+    private PImage sprite;
+
+    protected boolean downSprite1, downSprite2, downSprite3, downSprite4;
+
+    protected boolean rightSprite1, rightSprite2, rightSprite3, rightSprite4;
+
+    protected boolean upSprite1, upSprite2, upSprite3, upSprite4;
+
+    protected boolean leftSprite1, leftSprite2, leftSprite3, leftSprite4;
+
+    protected boolean moveDown, moveLeft, moveUp, moveRight;
+
+    protected boolean replace, reset;
+
+    public static final double RENDER_SPRITE = 0.2;
+
+
+    /**
+     * Draws all of the different figures available according to their position. 
+     * 
+     * Instance method to create the new figure to be inherited by all subclasses
+     * 
+     * @param x     the x-coordinate of the figure
+     * @param y     the y-coordinate of the figure
+     * 
+     * @see             IGraphic
+     * @since           1.0
+     */
+
+<span class="fc" id="L56">    public Figure(int x, int y) {</span>
+
+<span class="fc" id="L58">        this.x = x;</span>
+<span class="fc" id="L59">        this.y = y;</span>
+
+<span class="fc" id="L61">        this.downSprite1 = true;</span>
+<span class="fc" id="L62">        this.downSprite2 = false;</span>
+<span class="fc" id="L63">        this.downSprite3 = false;</span>
+<span class="fc" id="L64">        this.downSprite4 = false;</span>
+
+<span class="fc" id="L66">        this.rightSprite1 = false;</span>
+<span class="fc" id="L67">        this.rightSprite2 = false;</span>
+<span class="fc" id="L68">        this.rightSprite3 = false;</span>
+<span class="fc" id="L69">        this.rightSprite4 = false;</span>
+
+<span class="fc" id="L71">        this.upSprite1 = false;</span>
+<span class="fc" id="L72">        this.upSprite2 = false;</span>
+<span class="fc" id="L73">        this.upSprite3 = false;</span>
+<span class="fc" id="L74">        this.upSprite4 = false;</span>
+
+<span class="fc" id="L76">        this.leftSprite1 = false;</span>
+<span class="fc" id="L77">        this.leftSprite2 = false;</span>
+<span class="fc" id="L78">        this.leftSprite3 = false;</span>
+<span class="fc" id="L79">        this.leftSprite4 = false;</span>
+
+<span class="fc" id="L81">        this.moveDown = true;</span>
+<span class="fc" id="L82">        this.moveLeft = false;</span>
+<span class="fc" id="L83">        this.moveUp = false;</span>
+<span class="fc" id="L84">        this.moveRight = false;</span>
+
+<span class="fc" id="L86">        this.spriteTimer = 0;</span>
+
+<span class="fc" id="L88">        this.replace = false;</span>
+
+<span class="fc" id="L90">        this.reset = false;</span>
+
+<span class="fc" id="L92">        this.replaceX = 0;</span>
+<span class="fc" id="L93">        this.replaceY = 0;</span>
+<span class="fc" id="L94">    }</span>
+
+
+    /**
+     * 
+     * Abstract method tick used by the subclasses to update their position, movement and direction each frame
+     */
+
+    public abstract void tick();
+    
+    /**
+     * Sets the sprite of the figure from the file loaded in the directory
+     * 
+     * @param sprite    the PImage representation of the graphic
+     * 
+     * @see             IGraphic
+     * @since           1.0
+     */
+
+    public void setSprite(PImage sprite) {
+
+<span class="nc" id="L115">        this.sprite = sprite;</span>
+<span class="nc" id="L116">    }</span>
+
+    /**
+     * Draws the sprite set from the image loaded into the App.java
+     * 
+     * @param app       the App from which the program will run
+     * 
+     * @see             IGraphic
+     * @since           1.0
+     */
+
+    public void draw(PApplet app) {
+
+<span class="nc" id="L129">        app.image(this.sprite, this.x, this.y);</span>
+<span class="nc" id="L130">    }</span>
+
+    /**
+     * Returns the x-value of the figure coordinate
+     * 
+     * @return   the x-coordinate value of the figure
+     */
+
+    public int getX() {
+
+<span class="fc" id="L140">        return this.x;</span>
+    }
+
+    /**
+     * Returns the y-value of the figure coordinate
+     * 
+     * @return  the y-coordinate value of the figure
+     */
+
+    public int getY() {
+
+<span class="fc" id="L151">        return this.y;</span>
+    }
+
+    /**
+     * Returns true if the first down sprite is set, false otherwise
+     * @return      whether the first down sprite is set
+     */
+
+    public boolean getDownSprite1() {
+
+<span class="fc" id="L161">        return this.downSprite1;</span>
+    }
+
+    /**
+     * Returns true if the second down sprite is set, false otherwise
+     * @return      whether the second down sprite is set
+     */
+
+    public boolean getDownSprite2() {
+
+<span class="fc" id="L171">        return this.downSprite2;</span>
+    }
+    
+    /**
+     * Returns true if the third down sprite is set, false otherwise
+     * @return      whether the third down sprite is set
+     */
+
+    public boolean getDownSprite3() {
+
+<span class="fc" id="L181">        return this.downSprite3;</span>
+    }
+
+    /**
+     * Returns true if the fourth down sprite is set, false otherwise
+     * @return      whether the fourth down sprite is set
+     */
+
+    public boolean getDownSprite4() {
+
+<span class="fc" id="L191">        return this.downSprite4;</span>
+    }
+    
+    /**
+     * Returns true if the first right sprite is set, false otherwise
+     * @return      whether the first right sprite is set
+     */
+
+    public boolean getRightSprite1() {
+
+<span class="fc" id="L201">        return this.rightSprite1;</span>
+    }
+
+    /**
+     * Returns true if the second right sprite is set, false otherwise
+     * @return      whether the second right sprite is set
+     */
+
+    public boolean getRightSprite2() {
+
+<span class="fc" id="L211">        return this.rightSprite2;</span>
+    }
+
+    /**
+     * Returns true if the third right sprite is set, false otherwise
+     * @return      whether the third right sprite is set
+     */
+
+    public boolean getRightSprite3() {
+
+<span class="fc" id="L221">        return this.rightSprite3;</span>
+    }
+
+    /**
+     * Returns true if the fourth right sprite is set, false otherwise
+     * @return      whether the fourth right sprite is set
+     */
+
+    public boolean getRightSprite4() {
+
+<span class="fc" id="L231">        return this.rightSprite4;</span>
+    }
+
+    /**
+     * Returns true if the first up sprite is set, false otherwise
+     * @return      whether the first up sprite is set
+     */
+
+    public boolean getUpSprite1() {
+
+<span class="fc" id="L241">        return this.upSprite1;</span>
+    }
+
+    /**
+     * Returns true if the second up sprite is set, false otherwise
+     * @return      whether the second up sprite is set
+     */
+
+    public boolean getUpSprite2() {
+
+<span class="fc" id="L251">        return this.upSprite2;</span>
+    }
+
+    /**
+     * Returns true if the third up sprite is set, false otherwise
+     * @return      whether the third up sprite is set
+     */
+
+    public boolean getUpSprite3() {
+
+<span class="fc" id="L261">        return this.upSprite3;</span>
+    }
+
+    /**
+     * Returns true if the fourth up sprite is set, false otherwise
+     * @return      whether the fourth up sprite is set
+     */
+
+    public boolean getUpSprite4() {
+
+<span class="fc" id="L271">        return this.upSprite4;</span>
+    }
+
+    /**
+     * Returns true if the first left sprite is set, false otherwise
+     * @return      whether the first left sprite is set
+     */
+    
+    public boolean getLeftSprite1() {
+
+<span class="fc" id="L281">        return this.leftSprite1;</span>
+    }
+
+    /**
+     * Returns true if the second left sprite is set, false otherwise
+     * @return      whether the second left sprite is set
+     */
+
+    public boolean getLeftSprite2() {
+
+<span class="fc" id="L291">        return this.leftSprite2;</span>
+    }
+
+    /**
+     * Returns true if the third left sprite is set, false otherwise
+     * @return      whether the third left sprite is set
+     */
+    
+    public boolean getLeftSprite3() {
+
+<span class="fc" id="L301">        return this.leftSprite3;</span>
+    }
+
+    /**
+     * Returns true if the fourth left sprite is set, false otherwise
+     * @return      whether the fourth left sprite is set
+     */
+
+    public boolean getLeftSprite4() {
+
+<span class="fc" id="L311">        return this.leftSprite4;</span>
+    }
+
+    /**
+     * Reverts the incrementing the sprite time to be 0
+     */
+
+    public void resetSpriteTimer() {
+
+<span class="fc" id="L320">        this.spriteTimer = 0;</span>
+<span class="fc" id="L321">    }</span>
+
+    /**
+     * Increments the sprite timer to ensure the correct sprite is displayed in each frame
+     */
+
+    public void spriteTick() {
+
+<span class="fc" id="L329">        this.spriteTimer ++;</span>
+
+<span class="fc bfc" id="L331" title="All 2 branches covered.">        if (this.moveDown) {</span>
+
+<span class="fc" id="L333">            this.rightSprite1 = false;</span>
+<span class="fc" id="L334">            this.rightSprite2 = false;</span>
+<span class="fc" id="L335">            this.rightSprite3 = false;</span>
+<span class="fc" id="L336">            this.rightSprite4 = false;</span>
+
+<span class="fc" id="L338">            this.upSprite1 = false;</span>
+<span class="fc" id="L339">            this.upSprite2 = false;</span>
+<span class="fc" id="L340">            this.upSprite3 = false;</span>
+<span class="fc" id="L341">            this.upSprite4 = false;</span>
+
+<span class="fc" id="L343">            this.leftSprite1 = false;</span>
+<span class="fc" id="L344">            this.leftSprite2 = false;</span>
+<span class="fc" id="L345">            this.leftSprite3 = false;</span>
+<span class="fc" id="L346">            this.leftSprite4 = false;</span>
+
+<span class="fc" id="L348">            this.downSprite1 = false;</span>
+<span class="fc" id="L349">            this.downSprite2 = false;</span>
+<span class="fc" id="L350">            this.downSprite3 = false;</span>
+<span class="fc" id="L351">            this.downSprite4 = false;</span>
+
+<span class="fc bfc" id="L353" title="All 2 branches covered.">            if (this.spriteTimer &lt; RENDER_SPRITE * App.FPS) {</span>
+
+<span class="fc" id="L355">                this.downSprite1 = true;</span>
+            }
+
+<span class="fc bfc" id="L358" title="All 2 branches covered.">            else if (this.spriteTimer &lt; RENDER_SPRITE * App.FPS * 2) {</span>
+
+<span class="fc" id="L360">                this.downSprite1 = false;</span>
+<span class="fc" id="L361">                this.downSprite2 = true;</span>
+            }
+
+<span class="fc bfc" id="L364" title="All 2 branches covered.">            else if (this.spriteTimer &lt; RENDER_SPRITE * App.FPS * 3) {</span>
+
+<span class="fc" id="L366">                this.downSprite2 = false;</span>
+<span class="fc" id="L367">                this.downSprite3 = true;</span>
+            }
+
+<span class="fc bfc" id="L370" title="All 2 branches covered.">            else if (this.spriteTimer &lt; RENDER_SPRITE * App.FPS * 4) {</span>
+
+<span class="fc" id="L372">                this.downSprite3 = false;</span>
+<span class="fc" id="L373">                this.downSprite4 = true;</span>
+            }
+
+            else {
+
+<span class="fc" id="L378">                this.downSprite4 = false;</span>
+<span class="fc" id="L379">                this.spriteTimer = 0;</span>
+            }
+        }
+
+
+<span class="fc bfc" id="L384" title="All 2 branches covered.">        else if (this.moveRight) {</span>
+
+<span class="fc" id="L386">            this.downSprite1 = false;</span>
+<span class="fc" id="L387">            this.downSprite2 = false;</span>
+<span class="fc" id="L388">            this.downSprite3 = false;</span>
+<span class="fc" id="L389">            this.downSprite4 = false;</span>
+
+<span class="fc" id="L391">            this.upSprite1 = false;</span>
+<span class="fc" id="L392">            this.upSprite2 = false;</span>
+<span class="fc" id="L393">            this.upSprite3 = false;</span>
+<span class="fc" id="L394">            this.upSprite4 = false;</span>
+
+<span class="fc" id="L396">            this.leftSprite1 = false;</span>
+<span class="fc" id="L397">            this.leftSprite2 = false;</span>
+<span class="fc" id="L398">            this.leftSprite3 = false;</span>
+<span class="fc" id="L399">            this.leftSprite4 = false;</span>
+
+<span class="fc" id="L401">            this.rightSprite1 = false;</span>
+<span class="fc" id="L402">            this.rightSprite2 = false;</span>
+<span class="fc" id="L403">            this.rightSprite3 = false;</span>
+<span class="fc" id="L404">            this.rightSprite4 = false;</span>
+
+<span class="fc bfc" id="L406" title="All 2 branches covered.">            if (this.spriteTimer &lt; RENDER_SPRITE * App.FPS) {</span>
+
+<span class="fc" id="L408">                this.rightSprite1 = true;</span>
+            }
+
+<span class="fc bfc" id="L411" title="All 2 branches covered.">            else if (this.spriteTimer &lt; RENDER_SPRITE * App.FPS * 2) {</span>
+
+<span class="fc" id="L413">                this.rightSprite1 = false;</span>
+<span class="fc" id="L414">                this.rightSprite2 = true;</span>
+            }
+
+<span class="fc bfc" id="L417" title="All 2 branches covered.">            else if (this.spriteTimer &lt; RENDER_SPRITE * App.FPS * 3) {</span>
+
+<span class="fc" id="L419">                this.rightSprite2 = false;</span>
+<span class="fc" id="L420">                this.rightSprite3 = true;</span>
+            }
+
+<span class="fc bfc" id="L423" title="All 2 branches covered.">            else if (this.spriteTimer &lt; RENDER_SPRITE * App.FPS * 4) {</span>
+
+<span class="fc" id="L425">                this.rightSprite3 = false;</span>
+<span class="fc" id="L426">                this.rightSprite4 = true;</span>
+            }
+
+            else {
+
+<span class="fc" id="L431">                this.rightSprite4 = false;</span>
+<span class="fc" id="L432">                this.spriteTimer = 0;</span>
+            }
+        }
+
+
+<span class="fc bfc" id="L437" title="All 2 branches covered.">        else if (this.moveUp) {</span>
+
+<span class="fc" id="L439">            this.downSprite1 = false;</span>
+<span class="fc" id="L440">            this.downSprite2 = false;</span>
+<span class="fc" id="L441">            this.downSprite3 = false;</span>
+<span class="fc" id="L442">            this.downSprite4 = false;</span>
+
+<span class="fc" id="L444">            this.rightSprite1 = false;</span>
+<span class="fc" id="L445">            this.rightSprite2 = false;</span>
+<span class="fc" id="L446">            this.rightSprite3 = false;</span>
+<span class="fc" id="L447">            this.rightSprite4 = false;</span>
+
+<span class="fc" id="L449">            this.leftSprite1 = false;</span>
+<span class="fc" id="L450">            this.leftSprite2 = false;</span>
+<span class="fc" id="L451">            this.leftSprite3 = false;</span>
+<span class="fc" id="L452">            this.leftSprite4 = false;</span>
+
+<span class="fc" id="L454">            this.upSprite1 = false;</span>
+<span class="fc" id="L455">            this.upSprite2 = false;</span>
+<span class="fc" id="L456">            this.upSprite3 = false;</span>
+<span class="fc" id="L457">            this.upSprite4 = false;</span>
+
+<span class="fc bfc" id="L459" title="All 2 branches covered.">            if (this.spriteTimer &lt; RENDER_SPRITE * App.FPS) {</span>
+
+<span class="fc" id="L461">                this.upSprite1 = true;</span>
+            }
+
+<span class="fc bfc" id="L464" title="All 2 branches covered.">            else if (this.spriteTimer &lt; RENDER_SPRITE * App.FPS * 2) {</span>
+
+<span class="fc" id="L466">                this.upSprite1 = false;</span>
+<span class="fc" id="L467">                this.upSprite2 = true;</span>
+            }
+
+<span class="fc bfc" id="L470" title="All 2 branches covered.">            else if (this.spriteTimer &lt; RENDER_SPRITE * App.FPS * 3) {</span>
+
+<span class="fc" id="L472">                this.upSprite2 = false;</span>
+<span class="fc" id="L473">                this.upSprite3 = true;</span>
+            }
+
+<span class="fc bfc" id="L476" title="All 2 branches covered.">            else if (this.spriteTimer &lt; RENDER_SPRITE * App.FPS * 4) {</span>
+
+<span class="fc" id="L478">                this.upSprite3 = false;</span>
+<span class="fc" id="L479">                this.upSprite4 = true;</span>
+            }
+
+            else {
+
+<span class="fc" id="L484">                this.upSprite4 = false;</span>
+<span class="fc" id="L485">                this.spriteTimer = 0;</span>
+            }
+        }
+
+
+<span class="pc bpc" id="L490" title="1 of 2 branches missed.">        else if (this.moveLeft) {</span>
+
+<span class="fc" id="L492">            this.downSprite1 = false;</span>
+<span class="fc" id="L493">            this.downSprite2 = false;</span>
+<span class="fc" id="L494">            this.downSprite3 = false;</span>
+<span class="fc" id="L495">            this.downSprite4 = false;</span>
+
+<span class="fc" id="L497">            this.rightSprite1 = false;</span>
+<span class="fc" id="L498">            this.rightSprite2 = false;</span>
+<span class="fc" id="L499">            this.rightSprite3 = false;</span>
+<span class="fc" id="L500">            this.rightSprite4 = false;</span>
+
+<span class="fc" id="L502">            this.upSprite1 = false;</span>
+<span class="fc" id="L503">            this.upSprite2 = false;</span>
+<span class="fc" id="L504">            this.upSprite3 = false;</span>
+<span class="fc" id="L505">            this.upSprite4 = false;</span>
+
+<span class="fc" id="L507">            this.leftSprite1 = false;</span>
+<span class="fc" id="L508">            this.leftSprite2 = false;</span>
+<span class="fc" id="L509">            this.leftSprite3 = false;</span>
+<span class="fc" id="L510">            this.leftSprite4 = false;</span>
+
+<span class="fc bfc" id="L512" title="All 2 branches covered.">            if (this.spriteTimer &lt; RENDER_SPRITE * App.FPS) {</span>
+
+<span class="fc" id="L514">                this.leftSprite1 = true;</span>
+            }
+
+<span class="fc bfc" id="L517" title="All 2 branches covered.">            else if (this.spriteTimer &lt; RENDER_SPRITE * App.FPS * 2) {</span>
+
+<span class="fc" id="L519">                this.leftSprite1 = false;</span>
+<span class="fc" id="L520">                this.leftSprite2 = true;</span>
+            }
+
+<span class="fc bfc" id="L523" title="All 2 branches covered.">            else if (this.spriteTimer &lt; RENDER_SPRITE * App.FPS * 3) {</span>
+
+<span class="fc" id="L525">                this.leftSprite2 = false;</span>
+<span class="fc" id="L526">                this.leftSprite3 = true;</span>
+            }
+
+<span class="fc bfc" id="L529" title="All 2 branches covered.">            else if (this.spriteTimer &lt; RENDER_SPRITE * App.FPS * 4) {</span>
+
+<span class="fc" id="L531">                this.leftSprite3 = false;</span>
+<span class="fc" id="L532">                this.leftSprite4 = true;</span>
+            }
+
+            else {
+                
+<span class="fc" id="L537">                this.leftSprite4 = false;</span>
+<span class="fc" id="L538">                this.spriteTimer = 0;</span>
+            }
+        }
+<span class="fc" id="L541">    }</span>
+
+
+    /**
+     * Replaces a specific broken tile in the wall
+     * 
+     * @param x     the x-coordinate of the tile to be replaced
+     * @param y     the y-coordinate of the tile to be replaced
+     */
+    
+    public void wallReplace(int x, int y) {
+
+<span class="fc" id="L553">        this.replace = true;</span>
+<span class="fc" id="L554">        this.replaceX += x;</span>
+<span class="fc" id="L555">        this.replaceY += y;</span>
+<span class="fc" id="L556">    }</span>
+
+    /**
+     * Resets the game to its starting frame
+     */
+
+    public void gameReset() {
+        
+<span class="fc" id="L564">        this.reset = true;</span>
+<span class="fc" id="L565">        this.replace = false;</span>
+<span class="fc" id="L566">    }</span>
+
+    /**
+     * Reset any walls which were replaced to the default map
+     */
+
+    public void resetReplace() {
+
+<span class="fc" id="L574">        this.replaceX = 0;</span>
+<span class="fc" id="L575">        this.replaceY = 0;</span>
+<span class="fc" id="L576">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

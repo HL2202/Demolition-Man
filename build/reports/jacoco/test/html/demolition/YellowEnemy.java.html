@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>YellowEnemy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demolition</a> &gt; <a href="index.source.html" class="el_package">demolition</a> &gt; <span class="el_source">YellowEnemy.java</span></div><h1>YellowEnemy.java</h1><pre class="source lang-java linenums">/**
+ * 
+ * YellowEnemy is the class which creates a new yellow enemy object into the game
+ * Yellow enemy is one of two enemies in the game which are able to interact with the player
+ * 
+ * Yellow enemy extends from the Enemy superclass as well as the Figure superclass, and inherits all of their methods
+ * 
+ * @author  Harry Li
+ * @version %I%, %G%
+ * @since   1.0
+ */
+
+
+package demolition;
+
+import processing.core.PImage;
+import processing.core.PApplet;
+import java.util.ArrayList;
+
+import demolition.DynamicMatrix;
+import demolition.Enemy;
+
+
+public class YellowEnemy extends Enemy {
+
+    private int timer, yellowEnemyRow, yellowEnemyColumn;
+
+    private DynamicMatrix levels;
+    private ArrayList&lt;String&gt; level1;
+
+    private ArrayList&lt;String&gt; individualRow;
+    private String currentRow;
+
+    private PImage sprite;
+
+    /**
+     * Creates a new yellow enemy to bbe displayed on the map in the game
+     * 
+     * @param x     the x-coordinate of the yellow enemy
+     * @param y     the y-coordinate of the yellow enemy
+     * 
+     * @see         Enemy
+     * @see         Figure
+     */
+
+    public YellowEnemy(int x, int y) {
+        
+<span class="fc" id="L48">        super(x, y);</span>
+
+<span class="fc" id="L50">        this.levels = new DynamicMatrix();</span>
+<span class="fc" id="L51">        this.level1 = levels.getLevel1();</span>
+
+<span class="fc" id="L53">        this.yellowEnemyRow = 9;</span>
+<span class="fc" id="L54">        this.yellowEnemyColumn = 5;</span>
+<span class="fc" id="L55">        this.currentRow = level1.get(yellowEnemyRow);</span>
+
+<span class="fc" id="L57">        this.individualRow = new ArrayList&lt;String&gt;();</span>
+        
+<span class="fc" id="L59">        this.timer = 0;</span>
+<span class="fc" id="L60">    }</span>
+
+    /**
+     * Updates the map by incrementing a timer for the yellow enemy's movement and interacting with the map environment
+     * 
+     * Based on the AI, the yellow enemy will make a movement every second, which will update its position and direction
+     * 
+     * @see     Figure
+     */
+
+    public void tick() {
+
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        if (replace) {</span>
+
+<span class="fc" id="L74">            level1 = levels.replaceBrokenWall(level1, replaceX, replaceY);</span>
+<span class="fc" id="L75">            replace = false;</span>
+        }
+
+<span class="fc" id="L78">        level1 = levels.getLevel1();</span>
+
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (reset) {</span>
+
+<span class="fc" id="L82">            levels.resetLevel1(level1);</span>
+<span class="fc" id="L83">            this.x = 160;</span>
+<span class="fc" id="L84">            this.y = 336;</span>
+
+<span class="fc" id="L86">            this.yellowEnemyRow = 9;</span>
+<span class="fc" id="L87">            this.yellowEnemyColumn = 5;</span>
+
+<span class="fc" id="L89">            this.moveDown = true;</span>
+<span class="fc" id="L90">            this.moveLeft = false;</span>
+<span class="fc" id="L91">            this.moveUp = false;</span>
+<span class="fc" id="L92">            this.moveRight = false;</span>
+
+<span class="fc" id="L94">            reset = false;</span>
+<span class="fc" id="L95">            this.timer = 0;</span>
+        }
+
+<span class="fc" id="L98">        boolean moved = false;</span>
+        
+<span class="fc" id="L100">        this.timer ++;</span>
+
+<span class="pc bpc" id="L102" title="1 of 4 branches missed.">        if (this.timer &gt; SECONDS_BETWEEN_MOVES * App.FPS &amp;&amp; !enemyRemoved) {</span>
+
+<span class="fc bfc" id="L104" title="All 2 branches covered.">            while (!moved) {</span>
+            
+
+<span class="fc bfc" id="L107" title="All 2 branches covered.">                if (moveUp) {</span>
+
+<span class="fc" id="L109">                    moveDown = false;</span>
+<span class="fc" id="L110">                    moveUp = true;</span>
+<span class="fc" id="L111">                    moveLeft = false;</span>
+<span class="fc" id="L112">                    moveRight = false;</span>
+
+<span class="fc" id="L114">                    String rowAbove = level1.get(yellowEnemyRow - 1);</span>
+
+<span class="fc bfc" id="L116" title="All 2 branches covered.">                    for (int i = 0; i &lt; rowAbove.length(); i++) {</span>
+          
+<span class="fc" id="L118">                        Character c = rowAbove.charAt(i);</span>
+<span class="fc" id="L119">                        String letter = c.toString();</span>
+
+<span class="pc bpc" id="L121" title="1 of 6 branches missed.">                        if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+
+<span class="fc" id="L123">                            individualRow.add(letter);</span>
+                        }
+
+                        else {
+
+<span class="fc" id="L128">                            individualRow.add(&quot; &quot;);</span>
+                        }
+                    }
+
+<span class="pc bpc" id="L132" title="1 of 4 branches missed.">                    if (individualRow.get(yellowEnemyColumn).equals(&quot;W&quot;) || individualRow.get(yellowEnemyColumn).equals(&quot;B&quot;)) {</span>
+
+<span class="fc" id="L134">                        moveUp = false;</span>
+<span class="fc" id="L135">                        moveRight = true;</span>
+<span class="fc" id="L136">                        individualRow = new ArrayList&lt;String&gt;();</span>
+                    }
+
+                    else {
+
+<span class="fc" id="L141">                        this.y -= 32;</span>
+<span class="fc" id="L142">                        yellowEnemyRow --;</span>
+<span class="fc" id="L143">                        individualRow = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L144">                        moved = true;</span>
+                    }
+<span class="fc" id="L146">                }</span>
+
+
+<span class="fc bfc" id="L149" title="All 2 branches covered.">                else if (moveDown) {</span>
+
+<span class="fc" id="L151">                    moveDown = true;</span>
+<span class="fc" id="L152">                    moveUp = false;</span>
+<span class="fc" id="L153">                    moveLeft = false;</span>
+<span class="fc" id="L154">                    moveRight = false;</span>
+
+<span class="fc" id="L156">                    String rowBelow = level1.get(yellowEnemyRow + 1);</span>
+
+<span class="fc bfc" id="L158" title="All 2 branches covered.">                    for (int i = 0; i &lt; rowBelow.length(); i++) {</span>
+          
+<span class="fc" id="L160">                        Character c = rowBelow.charAt(i);</span>
+<span class="fc" id="L161">                        String letter = c.toString();</span>
+
+<span class="fc bfc" id="L163" title="All 6 branches covered.">                        if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+
+<span class="fc" id="L165">                            individualRow.add(letter);</span>
+                        }
+
+                        else {
+
+<span class="fc" id="L170">                            individualRow.add(&quot; &quot;);</span>
+                        }
+                    }
+
+<span class="pc bpc" id="L174" title="1 of 4 branches missed.">                    if (individualRow.get(yellowEnemyColumn).equals(&quot;W&quot;) || individualRow.get(yellowEnemyColumn).equals(&quot;B&quot;)) {</span>
+
+<span class="fc" id="L176">                        moveDown = false;</span>
+<span class="fc" id="L177">                        moveLeft = true;</span>
+<span class="fc" id="L178">                        individualRow = new ArrayList&lt;String&gt;();</span>
+                    }
+
+                    else {
+
+<span class="fc" id="L183">                        this.y += 32;</span>
+<span class="fc" id="L184">                        yellowEnemyRow ++;</span>
+<span class="fc" id="L185">                        individualRow = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L186">                        moved = true;</span>
+                    }
+<span class="fc" id="L188">                }</span>
+
+
+<span class="fc bfc" id="L191" title="All 2 branches covered.">                else if (moveLeft) {</span>
+
+<span class="fc" id="L193">                    moveDown = false;</span>
+<span class="fc" id="L194">                    moveUp = false;</span>
+<span class="fc" id="L195">                    moveLeft = true;</span>
+<span class="fc" id="L196">                    moveRight = false;</span>
+
+<span class="fc" id="L198">                    String row = level1.get(yellowEnemyRow);</span>
+
+<span class="fc bfc" id="L200" title="All 2 branches covered.">                    for (int i = 0; i &lt; row.length(); i++) {</span>
+                  
+<span class="fc" id="L202">                        Character c = row.charAt(i);</span>
+<span class="fc" id="L203">                        String letter = c.toString();</span>
+        
+<span class="fc bfc" id="L205" title="All 6 branches covered.">                        if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+
+<span class="fc" id="L207">                            individualRow.add(letter);</span>
+                        }
+        
+                        else {
+
+<span class="fc" id="L212">                            individualRow.add(&quot; &quot;);</span>
+                        }
+                    }
+        
+<span class="pc bpc" id="L216" title="1 of 4 branches missed.">                    if (individualRow.get(yellowEnemyColumn - 1).equals(&quot;W&quot;) || individualRow.get(yellowEnemyColumn - 1).equals(&quot;B&quot;)) {</span>
+
+<span class="fc" id="L218">                        moveLeft = false;</span>
+<span class="fc" id="L219">                        moveUp = true;</span>
+<span class="fc" id="L220">                        individualRow = new ArrayList&lt;String&gt;();</span>
+                    }
+        
+                    else {
+
+<span class="fc" id="L225">                        this.x -= 32;</span>
+<span class="fc" id="L226">                        yellowEnemyColumn --;</span>
+<span class="fc" id="L227">                        individualRow = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L228">                        moved = true;</span>
+                    }
+<span class="fc" id="L230">                }</span>
+                
+
+<span class="pc bpc" id="L233" title="1 of 2 branches missed.">                else if (moveRight) {</span>
+
+<span class="fc" id="L235">                    moveDown = false;</span>
+<span class="fc" id="L236">                    moveUp = false;</span>
+<span class="fc" id="L237">                    moveLeft = false;</span>
+<span class="fc" id="L238">                    moveRight = true;</span>
+                
+<span class="fc" id="L240">                    String row = level1.get(yellowEnemyRow);</span>
+
+<span class="fc bfc" id="L242" title="All 2 branches covered.">                    for (int i = 0; i &lt; row.length(); i++) {</span>
+                  
+<span class="fc" id="L244">                        Character c = row.charAt(i);</span>
+<span class="fc" id="L245">                        String letter = c.toString();</span>
+        
+<span class="pc bpc" id="L247" title="1 of 6 branches missed.">                        if (letter.equals(&quot;W&quot;) || letter.equals(&quot;B&quot;) || letter.equals(&quot;G&quot;)) {</span>
+
+<span class="fc" id="L249">                            individualRow.add(letter);</span>
+                        }
+        
+                        else {
+
+<span class="fc" id="L254">                            individualRow.add(&quot; &quot;);</span>
+                        }
+                    }
+        
+<span class="pc bpc" id="L258" title="1 of 4 branches missed.">                    if (individualRow.get(yellowEnemyColumn + 1).equals(&quot;W&quot;) || individualRow.get(yellowEnemyColumn + 1).equals(&quot;B&quot;)) {</span>
+
+<span class="fc" id="L260">                        moveRight = false;</span>
+<span class="fc" id="L261">                        moveDown = true;</span>
+<span class="fc" id="L262">                        individualRow = new ArrayList&lt;String&gt;();</span>
+                    }
+        
+                    else {
+
+<span class="fc" id="L267">                        this.x += 32;</span>
+<span class="fc" id="L268">                        yellowEnemyColumn ++;</span>
+<span class="fc" id="L269">                        individualRow = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L270">                        moved = true;</span>
+                    }
+                }
+
+<span class="fc" id="L274">                this.timer = 0;</span>
+            }
+        }
+<span class="fc" id="L277">    }</span>
+
+    /**
+     * Reverts an incrementing of the timer by decreasing the count by 1
+     */
+
+    public void timerUndo() {
+
+<span class="fc" id="L285">        this.timer --;</span>
+<span class="fc" id="L286">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

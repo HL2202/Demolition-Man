@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Lives.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demolition</a> &gt; <a href="index.source.html" class="el_package">demolition</a> &gt; <span class="el_source">Lives.java</span></div><h1>Lives.java</h1><pre class="source lang-java linenums">/**
+ * Lives is the object used to keep track of and display the player's remaining lives in the game.
+ * 
+ * The x and y coordinates of the lives object are passed as arguments when constructing the object.
+ * 
+ * The coordinates corresponds to a specific position denoted by App.java, which displays the text to the coordinates.
+ * 
+ * The player starts with three lives. Whenever the player loses a life, the number of lives decreases by 1
+ * 
+ * When the number of lives reaches zero, the game automatically ends
+ * 
+ * @author  Harry Li
+ * @version %I%, %G%
+ * @since   1.0
+ */
+
+
+package demolition;
+
+import processing.core.PImage;
+import processing.core.PApplet;
+import processing.core.PFont;
+import java.awt.Font;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+
+import demolition.TextDisplay;
+
+
+public class Lives extends TextDisplay {
+
+    private int numberLives;
+    private PImage sprite; 
+
+    private String fontName;
+
+
+    /**
+     * Creates a new lives object at the start of the game which extends from all of the attributes and methods from the TextDisplay super class, including text(), createFont(), textFont(), textSize(), getX() and getY().
+     * 
+     * @param x             the x-coordinate of the lives object
+     * @param y             the y-coordinate of the lives object
+     * 
+     * @see         TextDisplay
+     * @since       1.0
+     */
+
+    
+    public Lives(int x, int y) {
+        
+<span class="fc" id="L51">        super(x, y);</span>
+<span class="fc" id="L52">        this.numberLives = 3;</span>
+<span class="fc" id="L53">        this.fontName = &quot;src/main/resources/PressStart2P-Regular.ttf&quot;;</span>
+<span class="fc" id="L54">    }</span>
+
+
+    /**
+     * Creates the text in the App.java to be displayed on the screen
+     * 
+     * Abstract method inherited from the TextDisplay class
+     * 
+     * @param app   the App from which the program will run
+     * 
+     * @see         TextDisplay
+     * @since       1.0
+     */
+
+    
+    public void text(PApplet app) {
+
+<span class="nc" id="L71">        app.text(this.numberLives, this.x, this.y);</span>
+<span class="nc" id="L72">    }</span>
+
+
+    /**
+     * Returns the number of lives which the player has remaining
+     * 
+     * @return  the number of lives remaining
+     */
+
+    
+    public int getNumberLives() {
+
+<span class="fc" id="L84">        return this.numberLives;</span>
+    }
+
+
+    /**
+     * Decreases the number of lives the player has by 1
+     */
+
+    
+    public void loseLife() {
+
+<span class="fc" id="L95">        this.numberLives --;</span>
+<span class="fc" id="L96">    }</span>
+
+    /**
+     * 
+     * Resets the number of lives of the player back to 3
+     */
+
+    
+    public void resetLives() {
+
+<span class="fc" id="L106">        this.numberLives = 3;</span>
+<span class="fc" id="L107">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,1057 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Runner.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demolition</a> &gt; <a href="index.source.html" class="el_package">demolition</a> &gt; <span class="el_source">Runner.java</span></div><h1>Runner.java</h1><pre class="source lang-java linenums">/**
+ * Runner is the helper class of the program
+ * It directly performs the actions related to each of the classes and each of the methods called by the objects according to App.java
+ * 
+ * Every time App is made, a runner object is immediately constructed alongside the app
+ * Every time the draw() method is called in the App class, the run() method in the Runner class will be called
+ * This corresponds to actions pertaining to ticks in the game by updating the frames each second
+ * 
+ * As such, the runner class governs the behaviour of all of the other classes
+ * It determines when the BombGuy object is moved by the player, when the RedEnemy and YellowEnemy object move, updates the time and number of lives, and progresses the level
+ * 
+ * @author  Harry Li
+ * @version %I%, %G%
+ * @since   1.0
+ */
+
+
+package demolition;
+
+import processing.core.PApplet;
+import processing.core.PImage;
+import processing.core.PFont;
+import java.util.ArrayList;
+
+import demolition.App;
+
+
+public class Runner {
+
+    
+    private DynamicMatrix levels;
+    private static ArrayList&lt;String&gt; level1;
+    private static ArrayList&lt;String&gt; level2;
+
+    private Clock clock;
+    private Player player;
+
+    private BombGuy bombGuy;
+    private YellowEnemy yellowEnemy;
+    private RedEnemy redEnemy;
+
+    private boolean bombMade, resetLevel, setLevel1, setLevel2, gameOver, winGame, explosionStart;
+
+    private Lives lives;
+
+    private Time time;
+
+    private EndScreen endScreen;
+
+    private Bomb bomb;
+
+    private int lastXCoord, lastYCoord, explosionTimer;
+
+    private Explosion explosion;
+
+    public static final double EXPLOSION_COUNTDOWN = 0.5;
+
+
+    /**
+     * Creates a new runner object which is instantiated every time the program is run
+     * It also serves to create instance objects of all of the other classes which will be updated each frame
+     */
+
+
+<span class="fc" id="L65">    public Runner() {</span>
+
+<span class="fc" id="L67">        this.levels = new DynamicMatrix();</span>
+<span class="fc" id="L68">        this.level1 = levels.getLevel1();</span>
+<span class="fc" id="L69">        this.level2 = levels.getLevel2();</span>
+
+<span class="fc" id="L71">        this.bombMade = false;</span>
+
+<span class="fc" id="L73">        this.bombGuy = new BombGuy(32, 80);</span>
+     
+<span class="fc" id="L75">        this.yellowEnemy = new YellowEnemy(160, 336);</span>
+
+<span class="fc" id="L77">        this.redEnemy = new RedEnemy(256, 208);</span>
+
+<span class="fc" id="L79">        this.clock = new Clock(256, 20);</span>
+
+<span class="fc" id="L81">        this.player = new Player(128, 20);</span>
+
+<span class="fc" id="L83">        this.time = new Time(298, 50);</span>
+        
+<span class="fc" id="L85">        this.lives = new Lives(170, 50);</span>
+
+<span class="fc" id="L87">        this.setLevel1 = true;</span>
+
+<span class="fc" id="L89">        this.setLevel2 = false;</span>
+
+<span class="fc" id="L91">        this.gameOver = false;</span>
+
+<span class="fc" id="L93">        this.winGame = false;</span>
+
+<span class="fc" id="L95">        this.lastXCoord = 0;</span>
+
+<span class="fc" id="L97">        this.lastYCoord = 0;</span>
+
+<span class="fc" id="L99">        this.bomb = new Bomb(lastXCoord, lastYCoord);</span>
+
+<span class="fc" id="L101">        this.explosionTimer = 0;</span>
+
+<span class="fc" id="L103">        this.explosionStart = false;</span>
+
+<span class="fc" id="L105">        this.explosion = new Explosion(lastXCoord, lastYCoord);</span>
+<span class="fc" id="L106">    }</span>
+
+
+    /**
+     * Called to update the frames each second by calling the tick() methods of many of the classes
+     * Every time the draw() method is called, the run() method automatically is run and governs the behaviour of all objects shown on the screen
+     */
+
+    public void run() {
+
+<span class="fc bfc" id="L116" title="All 4 branches covered.">        if (!gameOver &amp;&amp; setLevel1) {</span>
+
+<span class="fc" id="L118">            this.bombGuy.tick();</span>
+<span class="fc" id="L119">            this.yellowEnemy.tick();</span>
+<span class="fc" id="L120">            this.redEnemy.tick();</span>
+
+<span class="fc bfc" id="L122" title="All 2 branches covered.">            if (resetLevel) {</span>
+
+<span class="fc" id="L124">                this.bombGuy = new BombGuy(32, 80);</span>
+     
+<span class="fc" id="L126">                this.yellowEnemy = new YellowEnemy(160, 336);</span>
+        
+<span class="fc" id="L128">                this.redEnemy = new RedEnemy(256, 208);</span>
+
+<span class="fc" id="L130">                this.resetLevel = false;</span>
+            }
+
+<span class="fc" id="L133">            this.bombGuy.spriteTick();</span>
+<span class="fc" id="L134">            this.yellowEnemy.spriteTick();</span>
+<span class="fc" id="L135">            this.redEnemy.spriteTick();</span>
+
+
+<span class="fc bfc" id="L138" title="All 4 branches covered.">            if (this.bombMade &amp;&amp; !this.bomb.isExploded()) {</span>
+
+<span class="fc" id="L140">                this.bomb.tick();</span>
+<span class="fc" id="L141">                this.bomb.spriteTick();</span>
+            }
+
+<span class="pc bpc" id="L144" title="1 of 4 branches missed.">            else if (this.bombMade &amp;&amp; this.bomb.isExploded()) {</span>
+
+<span class="fc" id="L146">                this.explosionStart = true;</span>
+<span class="fc" id="L147">                this.bombMade = false;</span>
+            }
+
+
+<span class="fc bfc" id="L151" title="All 2 branches covered.">            if (explosionStart) {</span>
+
+<span class="fc" id="L153">                this.explosionTimer ++;</span>
+                
+<span class="fc bfc" id="L155" title="All 2 branches covered.">                if (this.explosionTimer &gt; EXPLOSION_COUNTDOWN * App.FPS) {</span>
+
+<span class="fc" id="L157">                    this.explosionStart = false;</span>
+<span class="fc" id="L158">                    this.explosionTimer = 0;</span>
+                }
+            }
+
+
+<span class="fc bfc" id="L163" title="All 6 branches covered.">            if ((bomb.isExploded() &amp;&amp; bombMade) || explosionStart) {</span>
+
+<span class="fc bfc" id="L165" title="All 4 branches covered.">                if (bomb.getY() - 16 == bombGuy.getY() &amp;&amp; bomb.getX() == bombGuy.getX()) {</span>
+
+<span class="fc" id="L167">                    this.lives.loseLife();</span>
+<span class="fc" id="L168">                    levels.resetLevel1(level1);</span>
+<span class="fc" id="L169">                    this.time.timerReset();</span>
+                
+<span class="fc" id="L171">                    bombGuy.gameReset();</span>
+<span class="fc" id="L172">                    yellowEnemy.gameReset();</span>
+<span class="fc" id="L173">                    redEnemy.gameReset();</span>
+<span class="fc" id="L174">                    this.bomb.detonate();</span>
+<span class="fc" id="L175">                    this.bomb.resetMap();</span>
+                
+<span class="fc" id="L177">                    resetLevel = true;</span>
+<span class="fc" id="L178">                    this.bombMade = false;</span>
+<span class="fc" id="L179">                    this.explosionStart = false;</span>
+<span class="fc" id="L180">                    this.explosionTimer = 0;</span>
+                }
+
+                else {
+
+<span class="fc bfc" id="L185" title="All 4 branches covered.">                    if (bomb.getY() - 16 == yellowEnemy.getY() &amp;&amp; bomb.getX() == yellowEnemy.getX()) {</span>
+
+<span class="fc" id="L187">                        yellowEnemy.remove();</span>
+                    }
+
+<span class="fc bfc" id="L190" title="All 4 branches covered.">                    if (bomb.getY() - 16 == redEnemy.getY() &amp;&amp; bomb.getX() == redEnemy.getX()) {</span>
+
+<span class="fc" id="L192">                        redEnemy.remove();</span>
+                    }
+                }
+
+
+<span class="fc bfc" id="L197" title="All 4 branches covered.">                if (!bomb.getBlockedLeft() &amp;&amp; !resetLevel) {</span>
+
+<span class="pc bpc" id="L199" title="1 of 6 branches missed.">                    if (bomb.getY() - 16 == bombGuy.getY() &amp;&amp; (bomb.getX() - 32 == bombGuy.getX() || bomb.getX() - 64 == bombGuy.getX())) {</span>
+
+<span class="fc" id="L201">                        this.lives.loseLife();</span>
+<span class="fc" id="L202">                        levels.resetLevel1(level1);</span>
+<span class="fc" id="L203">                        this.time.timerReset();</span>
+                    
+<span class="fc" id="L205">                        bombGuy.gameReset();</span>
+<span class="fc" id="L206">                        yellowEnemy.gameReset();</span>
+<span class="fc" id="L207">                        redEnemy.gameReset();</span>
+<span class="fc" id="L208">                        this.bomb.detonate();</span>
+<span class="fc" id="L209">                        this.bomb.resetMap();</span>
+                    
+<span class="fc" id="L211">                        resetLevel = true;</span>
+<span class="fc" id="L212">                        this.bombMade = false;</span>
+<span class="fc" id="L213">                        this.explosionStart = false;</span>
+<span class="fc" id="L214">                        this.explosionTimer = 0;</span>
+                    }
+
+                    else {
+
+<span class="pc bpc" id="L219" title="1 of 6 branches missed.">                        if (bomb.getY() - 16 == yellowEnemy.getY() &amp;&amp; (bomb.getX() - 32 == yellowEnemy.getX() || bomb.getX() - 64 == yellowEnemy.getX())) {</span>
+
+<span class="fc" id="L221">                            yellowEnemy.remove();</span>
+                        }
+
+<span class="pc bpc" id="L224" title="1 of 6 branches missed.">                        if (bomb.getY() - 16 == redEnemy.getY() &amp;&amp; (bomb.getX() - 32 == redEnemy.getX() || bomb.getX() - 64 == redEnemy.getX())) {</span>
+
+<span class="fc" id="L226">                            redEnemy.remove();</span>
+                        }
+                    }
+                }
+
+<span class="fc bfc" id="L231" title="All 4 branches covered.">                if (!bomb.getBlockedRight() &amp;&amp; !resetLevel) {</span>
+                    
+<span class="pc bpc" id="L233" title="1 of 6 branches missed.">                    if (bomb.getY() - 16 == bombGuy.getY() &amp;&amp; (bomb.getX() + 32 == bombGuy.getX() || bomb.getX() + 64 == bombGuy.getX())) {</span>
+
+<span class="fc" id="L235">                        this.lives.loseLife();</span>
+<span class="fc" id="L236">                        levels.resetLevel1(level1);</span>
+<span class="fc" id="L237">                        this.time.timerReset();</span>
+                    
+<span class="fc" id="L239">                        bombGuy.gameReset();</span>
+<span class="fc" id="L240">                        yellowEnemy.gameReset();</span>
+<span class="fc" id="L241">                        redEnemy.gameReset();</span>
+<span class="fc" id="L242">                        this.bomb.detonate();</span>
+<span class="fc" id="L243">                        this.bomb.resetMap();</span>
+                    
+<span class="fc" id="L245">                        resetLevel = true;</span>
+<span class="fc" id="L246">                        this.bombMade = false;</span>
+<span class="fc" id="L247">                        this.explosionStart = false;</span>
+<span class="fc" id="L248">                        this.explosionTimer = 0;</span>
+                    }
+
+                    else {
+
+<span class="pc bpc" id="L253" title="1 of 6 branches missed.">                        if (bomb.getY() - 16 == yellowEnemy.getY() &amp;&amp; (bomb.getX() + 32 == yellowEnemy.getX() || bomb.getX() + 64 == yellowEnemy.getX())) {</span>
+
+<span class="fc" id="L255">                            yellowEnemy.remove();</span>
+                        }
+
+<span class="pc bpc" id="L258" title="2 of 6 branches missed.">                        if (bomb.getY() - 16 == redEnemy.getY() &amp;&amp; (bomb.getX() + 32 == redEnemy.getX() || bomb.getX() + 64 == redEnemy.getX())) {</span>
+
+<span class="nc" id="L260">                            redEnemy.remove();</span>
+                        }
+                    }
+                }
+
+
+<span class="fc bfc" id="L266" title="All 4 branches covered.">                if (!bomb.getBlockedUp() &amp;&amp; !resetLevel) {</span>
+
+<span class="pc bpc" id="L268" title="1 of 6 branches missed.">                    if (bomb.getX() == bombGuy.getX() &amp;&amp; (bomb.getY() - 48 == bombGuy.getY() || bomb.getY() - 80 == bombGuy.getY())) {</span>
+
+<span class="fc" id="L270">                        this.lives.loseLife();</span>
+<span class="fc" id="L271">                        levels.resetLevel1(level1);</span>
+<span class="fc" id="L272">                        this.time.timerReset();</span>
+                    
+<span class="fc" id="L274">                        bombGuy.gameReset();</span>
+<span class="fc" id="L275">                        yellowEnemy.gameReset();</span>
+<span class="fc" id="L276">                        redEnemy.gameReset();</span>
+<span class="fc" id="L277">                        this.bomb.detonate();</span>
+<span class="fc" id="L278">                        this.bomb.resetMap();</span>
+                    
+<span class="fc" id="L280">                        resetLevel = true;</span>
+<span class="fc" id="L281">                        this.bombMade = false;</span>
+<span class="fc" id="L282">                        this.explosionStart = false;</span>
+<span class="fc" id="L283">                        this.explosionTimer = 0;</span>
+                    }
+
+                    else {
+
+<span class="pc bpc" id="L288" title="1 of 6 branches missed.">                        if (bomb.getX() == yellowEnemy.getX() &amp;&amp; (bomb.getY() - 48 == yellowEnemy.getY() || bomb.getY() - 80 == yellowEnemy.getY())) {</span>
+
+<span class="fc" id="L290">                            yellowEnemy.remove();</span>
+                        }
+
+<span class="pc bpc" id="L293" title="2 of 6 branches missed.">                        if (bomb.getX() == redEnemy.getX() &amp;&amp; (bomb.getY() - 48 == redEnemy.getY() || bomb.getY() - 80 == redEnemy.getY())) {</span>
+
+<span class="nc" id="L295">                            redEnemy.remove();</span>
+                        }
+                    }
+                }
+
+
+<span class="fc bfc" id="L301" title="All 4 branches covered.">                if (!bomb.getBlockedDown() &amp;&amp; !resetLevel) {</span>
+
+<span class="pc bpc" id="L303" title="1 of 6 branches missed.">                    if (bomb.getX() == bombGuy.getX() &amp;&amp; (bomb.getY() + 16 == bombGuy.getY() || bomb.getY() + 48 == bombGuy.getY())) {</span>
+
+<span class="fc" id="L305">                        this.lives.loseLife();</span>
+<span class="fc" id="L306">                        levels.resetLevel1(level1);</span>
+<span class="fc" id="L307">                        this.time.timerReset();</span>
+                    
+<span class="fc" id="L309">                        bombGuy.gameReset();</span>
+<span class="fc" id="L310">                        yellowEnemy.gameReset();</span>
+<span class="fc" id="L311">                        redEnemy.gameReset();</span>
+<span class="fc" id="L312">                        this.bomb.detonate();</span>
+<span class="fc" id="L313">                        this.bomb.resetMap();</span>
+                    
+<span class="fc" id="L315">                        resetLevel = true;</span>
+<span class="fc" id="L316">                        this.bombMade = false;</span>
+<span class="fc" id="L317">                        this.explosionStart = false;</span>
+<span class="fc" id="L318">                        this.explosionTimer = 0;</span>
+                    }
+
+                    else {
+
+<span class="pc bpc" id="L323" title="1 of 6 branches missed.">                        if (bomb.getX() == yellowEnemy.getX() &amp;&amp; (bomb.getY() + 16 == yellowEnemy.getY() || bomb.getY() + 48 == yellowEnemy.getY())) {</span>
+
+<span class="fc" id="L325">                            yellowEnemy.remove();</span>
+                        }
+
+<span class="pc bpc" id="L328" title="2 of 6 branches missed.">                        if (bomb.getX() == redEnemy.getX() &amp;&amp; (bomb.getY() + 16 == redEnemy.getY() || bomb.getY() + 48 == redEnemy.getY())) {</span>
+
+<span class="fc" id="L330">                            redEnemy.remove();</span>
+                        }
+                    }
+                }
+
+
+<span class="pc bpc" id="L336" title="1 of 4 branches missed.">                if (this.bomb.getBrokenWallUp1() &amp;&amp; !resetLevel) {</span>
+
+<span class="fc" id="L338">                    int replaceX = bomb.getX();</span>
+<span class="fc" id="L339">                    int replaceY = bomb.getY() - 96;</span>
+<span class="fc" id="L340">                    level1 = levels.replaceBrokenWall(level1, replaceX, replaceY);</span>
+
+<span class="fc" id="L342">                    bombGuy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L343">                    bombGuy.tick();</span>
+<span class="fc" id="L344">                    bombGuy.resetReplace(); </span>
+
+<span class="fc" id="L346">                    yellowEnemy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L347">                    yellowEnemy.tick();</span>
+<span class="fc" id="L348">                    yellowEnemy.timerUndo();</span>
+<span class="fc" id="L349">                    yellowEnemy.resetReplace(); </span>
+
+<span class="fc" id="L351">                    redEnemy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L352">                    redEnemy.tick();</span>
+<span class="fc" id="L353">                    redEnemy.timerUndo();</span>
+<span class="fc" id="L354">                    redEnemy.resetReplace();</span>
+
+<span class="fc" id="L356">                    bomb.updateMap(replaceX, replaceY);</span>
+                }
+
+<span class="pc bpc" id="L359" title="1 of 4 branches missed.">                if (this.bomb.getBrokenWallDown1() &amp;&amp; !resetLevel) {</span>
+
+<span class="fc" id="L361">                    int replaceX = bomb.getX();</span>
+<span class="fc" id="L362">                    int replaceY = bomb.getY() - 32;</span>
+<span class="fc" id="L363">                    level1 = levels.replaceBrokenWall(level1, replaceX, replaceY);</span>
+
+<span class="fc" id="L365">                    bombGuy.wallReplace(replaceX, replaceY); </span>
+<span class="fc" id="L366">                    bombGuy.tick();</span>
+<span class="fc" id="L367">                    bombGuy.resetReplace(); </span>
+
+<span class="fc" id="L369">                    yellowEnemy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L370">                    yellowEnemy.tick();</span>
+<span class="fc" id="L371">                    yellowEnemy.timerUndo();</span>
+<span class="fc" id="L372">                    yellowEnemy.resetReplace(); </span>
+
+<span class="fc" id="L374">                    redEnemy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L375">                    redEnemy.tick();</span>
+<span class="fc" id="L376">                    redEnemy.timerUndo();</span>
+<span class="fc" id="L377">                    redEnemy.resetReplace(); </span>
+
+<span class="fc" id="L379">                    bomb.updateMap(replaceX, replaceY);</span>
+                }
+
+
+<span class="pc bpc" id="L383" title="1 of 4 branches missed.">                if (this.bomb.getBrokenWallLeft1() &amp;&amp; !resetLevel) {</span>
+
+<span class="fc" id="L385">                    int replaceX = bomb.getX() - 32;</span>
+<span class="fc" id="L386">                    int replaceY = bomb.getY() - 64;</span>
+<span class="fc" id="L387">                    level1 = levels.replaceBrokenWall(level1, replaceX, replaceY); </span>
+
+<span class="fc" id="L389">                    bombGuy.wallReplace(replaceX, replaceY); </span>
+<span class="fc" id="L390">                    bombGuy.tick();</span>
+<span class="fc" id="L391">                    bombGuy.resetReplace(); </span>
+
+<span class="fc" id="L393">                    yellowEnemy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L394">                    yellowEnemy.tick();</span>
+<span class="fc" id="L395">                    yellowEnemy.timerUndo();</span>
+<span class="fc" id="L396">                    yellowEnemy.resetReplace(); </span>
+
+<span class="fc" id="L398">                    redEnemy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L399">                    redEnemy.tick();</span>
+<span class="fc" id="L400">                    redEnemy.timerUndo();</span>
+<span class="fc" id="L401">                    redEnemy.resetReplace(); </span>
+
+<span class="fc" id="L403">                    bomb.updateMap(replaceX, replaceY);</span>
+                }
+            
+<span class="pc bpc" id="L406" title="1 of 4 branches missed.">                if (this.bomb.getBrokenWallRight1() &amp;&amp; !resetLevel) {</span>
+
+<span class="fc" id="L408">                    int replaceX = bomb.getX() + 32;</span>
+<span class="fc" id="L409">                    int replaceY = bomb.getY() - 64;</span>
+<span class="fc" id="L410">                    level1 = levels.replaceBrokenWall(level1, replaceX, replaceY); </span>
+
+<span class="fc" id="L412">                    bombGuy.wallReplace(replaceX, replaceY); </span>
+<span class="fc" id="L413">                    bombGuy.tick();</span>
+<span class="fc" id="L414">                    bombGuy.resetReplace(); </span>
+
+<span class="fc" id="L416">                    yellowEnemy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L417">                    yellowEnemy.tick();</span>
+<span class="fc" id="L418">                    yellowEnemy.timerUndo();</span>
+<span class="fc" id="L419">                    yellowEnemy.resetReplace(); </span>
+
+<span class="fc" id="L421">                    redEnemy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L422">                    redEnemy.tick();</span>
+<span class="fc" id="L423">                    redEnemy.timerUndo();</span>
+<span class="fc" id="L424">                    redEnemy.resetReplace(); </span>
+
+<span class="fc" id="L426">                    bomb.updateMap(replaceX, replaceY);</span>
+                }
+
+
+<span class="pc bpc" id="L430" title="3 of 8 branches missed.">                if (this.bomb.getBrokenWallUp2() &amp;&amp; !this.bomb.getBrokenWallUp1() &amp;&amp; !resetLevel &amp;&amp; !this.bomb.getBlockedUp()) {</span>
+
+<span class="fc" id="L432">                    int replaceX = bomb.getX();</span>
+<span class="fc" id="L433">                    int replaceY = bomb.getY() - 128;</span>
+<span class="fc" id="L434">                    level1 = levels.replaceBrokenWall(level1, replaceX, replaceY);</span>
+
+<span class="fc" id="L436">                    bombGuy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L437">                    bombGuy.tick();</span>
+<span class="fc" id="L438">                    bombGuy.resetReplace(); </span>
+
+<span class="fc" id="L440">                    yellowEnemy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L441">                    yellowEnemy.tick();</span>
+<span class="fc" id="L442">                    yellowEnemy.timerUndo();</span>
+<span class="fc" id="L443">                    yellowEnemy.resetReplace(); </span>
+
+<span class="fc" id="L445">                    redEnemy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L446">                    redEnemy.tick();</span>
+<span class="fc" id="L447">                    redEnemy.timerUndo();</span>
+<span class="fc" id="L448">                    redEnemy.resetReplace(); </span>
+
+<span class="fc" id="L450">                    bomb.updateMap(replaceX, replaceY);</span>
+                }
+
+<span class="pc bpc" id="L453" title="2 of 8 branches missed.">                if (this.bomb.getBrokenWallDown2() &amp;&amp; !this.bomb.getBrokenWallDown1() &amp;&amp; !resetLevel &amp;&amp; !this.bomb.getBlockedDown()) {</span>
+
+<span class="fc" id="L455">                    int replaceX = bomb.getX();</span>
+<span class="fc" id="L456">                    int replaceY = bomb.getY();</span>
+<span class="fc" id="L457">                    level1 = levels.replaceBrokenWall(level1, replaceX, replaceY); </span>
+
+<span class="fc" id="L459">                    bombGuy.wallReplace(replaceX, replaceY); </span>
+<span class="fc" id="L460">                    bombGuy.tick();</span>
+<span class="fc" id="L461">                    bombGuy.resetReplace(); </span>
+
+<span class="fc" id="L463">                    yellowEnemy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L464">                    yellowEnemy.tick();</span>
+<span class="fc" id="L465">                    yellowEnemy.timerUndo();</span>
+<span class="fc" id="L466">                    yellowEnemy.resetReplace(); </span>
+
+<span class="fc" id="L468">                    redEnemy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L469">                    redEnemy.tick();</span>
+<span class="fc" id="L470">                    redEnemy.timerUndo();</span>
+<span class="fc" id="L471">                    redEnemy.resetReplace(); </span>
+
+<span class="fc" id="L473">                    bomb.updateMap(replaceX, replaceY);</span>
+                }
+
+
+<span class="pc bpc" id="L477" title="3 of 8 branches missed.">                if (this.bomb.getBrokenWallLeft2() &amp;&amp; !this.bomb.getBrokenWallLeft1() &amp;&amp; !resetLevel &amp;&amp; !this.bomb.getBlockedLeft()) {</span>
+
+<span class="fc" id="L479">                    int replaceX = bomb.getX() - 64;</span>
+<span class="fc" id="L480">                    int replaceY = bomb.getY() - 64;</span>
+<span class="fc" id="L481">                    level1 = levels.replaceBrokenWall(level1, replaceX, replaceY); </span>
+
+<span class="fc" id="L483">                    bombGuy.wallReplace(replaceX, replaceY); </span>
+<span class="fc" id="L484">                    bombGuy.tick();</span>
+<span class="fc" id="L485">                    bombGuy.resetReplace(); </span>
+
+<span class="fc" id="L487">                    yellowEnemy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L488">                    yellowEnemy.tick();</span>
+<span class="fc" id="L489">                    yellowEnemy.timerUndo();</span>
+<span class="fc" id="L490">                    yellowEnemy.resetReplace(); </span>
+
+<span class="fc" id="L492">                    redEnemy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L493">                    redEnemy.tick();</span>
+<span class="fc" id="L494">                    redEnemy.timerUndo();</span>
+<span class="fc" id="L495">                    redEnemy.resetReplace(); </span>
+
+<span class="fc" id="L497">                    bomb.updateMap(replaceX, replaceY);</span>
+                }
+            
+<span class="pc bpc" id="L500" title="3 of 8 branches missed.">                if (this.bomb.getBrokenWallRight2() &amp;&amp; !this.bomb.getBrokenWallRight1() &amp;&amp; !resetLevel &amp;&amp; !this.bomb.getBlockedRight()) {</span>
+
+<span class="fc" id="L502">                    int replaceX = bomb.getX() + 64;</span>
+<span class="fc" id="L503">                    int replaceY = bomb.getY() - 64;</span>
+<span class="fc" id="L504">                    level1 = levels.replaceBrokenWall(level1, replaceX, replaceY); </span>
+
+<span class="fc" id="L506">                    bombGuy.wallReplace(replaceX, replaceY); </span>
+<span class="fc" id="L507">                    bombGuy.tick();</span>
+<span class="fc" id="L508">                    bombGuy.resetReplace(); </span>
+
+<span class="fc" id="L510">                    yellowEnemy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L511">                    yellowEnemy.tick();</span>
+<span class="fc" id="L512">                    yellowEnemy.timerUndo();</span>
+<span class="fc" id="L513">                    yellowEnemy.resetReplace(); </span>
+
+<span class="fc" id="L515">                    redEnemy.wallReplace(replaceX, replaceY);</span>
+<span class="fc" id="L516">                    redEnemy.tick();</span>
+<span class="fc" id="L517">                    redEnemy.timerUndo();</span>
+<span class="fc" id="L518">                    redEnemy.resetReplace(); </span>
+
+<span class="fc" id="L520">                    bomb.updateMap(replaceX, replaceY);</span>
+                }
+            }
+
+
+<span class="fc bfc" id="L525" title="All 2 branches covered.">            if (!yellowEnemy.isRemoved()) {</span>
+
+<span class="fc bfc" id="L527" title="All 4 branches covered.">                if (bombGuy.getX() == yellowEnemy.getX() &amp;&amp; bombGuy.getY() == yellowEnemy.getY()) {</span>
+
+<span class="fc" id="L529">                    this.lives.loseLife();</span>
+<span class="fc" id="L530">                    levels.resetLevel1(level1);</span>
+<span class="fc" id="L531">                    this.time.timerReset();</span>
+                
+<span class="fc" id="L533">                    bombGuy.gameReset();</span>
+<span class="fc" id="L534">                    yellowEnemy.gameReset();</span>
+<span class="fc" id="L535">                    redEnemy.gameReset();</span>
+<span class="fc" id="L536">                    this.bomb.detonate();</span>
+<span class="fc" id="L537">                    this.bomb.resetMap();</span>
+                
+<span class="fc" id="L539">                    resetLevel = true;</span>
+<span class="fc" id="L540">                    this.bombMade = false;</span>
+<span class="fc" id="L541">                    this.explosionStart = false;</span>
+<span class="fc" id="L542">                    this.explosionTimer = 0;</span>
+                }
+            }
+ 
+<span class="fc bfc" id="L546" title="All 2 branches covered.">            if (!redEnemy.isRemoved()) {</span>
+
+<span class="fc bfc" id="L548" title="All 4 branches covered.">                if (bombGuy.getX() == redEnemy.getX() &amp;&amp; bombGuy.getY() == redEnemy.getY()) {</span>
+
+<span class="fc" id="L550">                    this.lives.loseLife();</span>
+<span class="fc" id="L551">                    levels.resetLevel1(level1);</span>
+                
+<span class="fc" id="L553">                    bombGuy.gameReset();</span>
+<span class="fc" id="L554">                    redEnemy.gameReset();</span>
+<span class="fc" id="L555">                    yellowEnemy.gameReset();</span>
+<span class="fc" id="L556">                    this.time.timerReset();</span>
+<span class="fc" id="L557">                    this.bomb.detonate();</span>
+<span class="fc" id="L558">                    this.bomb.resetMap();</span>
+                
+<span class="fc" id="L560">                    resetLevel = true;</span>
+<span class="fc" id="L561">                    this.bombMade = false;</span>
+<span class="fc" id="L562">                    this.explosionStart = false;</span>
+<span class="fc" id="L563">                    this.explosionTimer = 0;</span>
+                }
+            }
+
+
+<span class="pc bpc" id="L568" title="1 of 4 branches missed.">            if (this.lives.getNumberLives() == 0 || this.time.getTimeCount() == 0) {</span>
+
+<span class="fc" id="L570">                setLevel1 = false;</span>
+<span class="fc" id="L571">                gameOver = true;</span>
+            }
+ 
+<span class="pc bpc" id="L574" title="1 of 4 branches missed.">            else if (bombGuy.getX() == 416 &amp;&amp; bombGuy.getY() == 400) {</span>
+
+<span class="fc" id="L576">                this.setLevel1 = false;</span>
+<span class="fc" id="L577">                this.setLevel2 = true;</span>
+<span class="fc" id="L578">                this.time.timerReset();</span>
+<span class="fc" id="L579">                this.lives.resetLives();</span>
+<span class="fc" id="L580">                this.bomb.detonate();</span>
+
+<span class="fc" id="L582">                this.bombGuy = new BombGuy(32, 240);</span>
+<span class="fc" id="L583">                this.bombGuy.resetSpriteTimer();</span>
+<span class="fc" id="L584">                this.bombGuy.nextLevel();</span>
+<span class="fc" id="L585">                this.explosionStart = false;</span>
+<span class="fc" id="L586">                this.explosionTimer = 0;</span>
+            }       
+        }
+
+
+<span class="pc bpc" id="L591" title="1 of 4 branches missed.">        else if (!gameOver &amp;&amp; setLevel2) {</span>
+
+<span class="fc bfc" id="L593" title="All 2 branches covered.">            if (resetLevel) {</span>
+
+<span class="fc" id="L595">                this.bombGuy = new BombGuy(32, 240);</span>
+
+<span class="fc" id="L597">                this.bombGuy.nextLevel();</span>
+
+<span class="fc" id="L599">                this.resetLevel = false;</span>
+            }
+
+<span class="fc" id="L602">            this.bombGuy.tick();</span>
+<span class="fc" id="L603">            this.bombGuy.spriteTick();</span>
+
+<span class="fc bfc" id="L605" title="All 4 branches covered.">            if (this.bombMade &amp;&amp; !this.bomb.isExploded()) {</span>
+<span class="fc" id="L606">                this.bomb.nextLevel();</span>
+<span class="fc" id="L607">                this.bomb.tick();</span>
+
+<span class="fc" id="L609">                this.bomb.spriteTick();</span>
+            }
+
+<span class="pc bpc" id="L612" title="1 of 4 branches missed.">            else if (this.bombMade &amp;&amp; this.bomb.isExploded()) {</span>
+
+<span class="fc" id="L614">                this.explosionStart = true;</span>
+<span class="fc" id="L615">                this.bombMade = false;</span>
+            }
+            
+
+<span class="fc bfc" id="L619" title="All 2 branches covered.">            if (explosionStart) {</span>
+
+<span class="fc" id="L621">                this.explosionTimer ++;</span>
+                
+<span class="fc bfc" id="L623" title="All 2 branches covered.">                if (this.explosionTimer &gt; EXPLOSION_COUNTDOWN * App.FPS) {</span>
+
+<span class="fc" id="L625">                    this.explosionStart = false;</span>
+<span class="fc" id="L626">                    this.explosionTimer = 0;</span>
+                }
+            }
+
+
+<span class="fc bfc" id="L631" title="All 6 branches covered.">            if ((bomb.isExploded() &amp;&amp; bombMade) || explosionStart) {</span>
+
+<span class="pc bpc" id="L633" title="1 of 4 branches missed.">                if (bomb.getY() - 16 == bombGuy.getY() &amp;&amp; bomb.getX() == bombGuy.getX()) {</span>
+
+<span class="fc" id="L635">                    this.lives.loseLife();</span>
+<span class="fc" id="L636">                    levels.resetLevel2(level2);</span>
+<span class="fc" id="L637">                    this.time.timerReset();</span>
+                
+<span class="fc" id="L639">                    bombGuy.gameReset();</span>
+<span class="fc" id="L640">                    this.bomb.detonate();</span>
+<span class="fc" id="L641">                    this.bomb.resetMap();</span>
+                
+<span class="fc" id="L643">                    resetLevel = true;</span>
+<span class="fc" id="L644">                    this.bombMade = false;</span>
+<span class="fc" id="L645">                    this.explosionStart = false;</span>
+<span class="fc" id="L646">                    this.explosionTimer = 0;</span>
+                }
+
+
+<span class="fc bfc" id="L650" title="All 4 branches covered.">                if (!bomb.getBlockedLeft() &amp;&amp; !resetLevel) {</span>
+
+<span class="pc bpc" id="L652" title="2 of 6 branches missed.">                    if (bomb.getY() - 16 == bombGuy.getY() &amp;&amp; (bomb.getX() - 32 == bombGuy.getX() || bomb.getX() - 64 == bombGuy.getX())) {</span>
+
+<span class="fc" id="L654">                        this.lives.loseLife();</span>
+<span class="fc" id="L655">                        levels.resetLevel2(level2);</span>
+<span class="fc" id="L656">                        this.time.timerReset();</span>
+<span class="fc" id="L657">                        this.bomb.resetMap();</span>
+                    
+<span class="fc" id="L659">                        bombGuy.gameReset();</span>
+<span class="fc" id="L660">                        this.bomb.detonate();</span>
+                    
+<span class="fc" id="L662">                        resetLevel = true;</span>
+<span class="fc" id="L663">                        this.bombMade = false;</span>
+<span class="fc" id="L664">                        this.explosionStart = false;</span>
+<span class="fc" id="L665">                        this.explosionTimer = 0;</span>
+                    }
+                }
+
+<span class="fc bfc" id="L669" title="All 4 branches covered.">                if (!bomb.getBlockedRight() &amp;&amp; !resetLevel) {</span>
+                    
+<span class="pc bpc" id="L671" title="2 of 6 branches missed.">                    if (bomb.getY() - 16 == bombGuy.getY() &amp;&amp; (bomb.getX() + 32 == bombGuy.getX() || bomb.getX() + 64 == bombGuy.getX())) {</span>
+
+<span class="fc" id="L673">                        this.lives.loseLife();</span>
+<span class="fc" id="L674">                        levels.resetLevel2(level2);</span>
+<span class="fc" id="L675">                        this.time.timerReset();</span>
+                
+<span class="fc" id="L677">                        bombGuy.gameReset();</span>
+<span class="fc" id="L678">                        this.bomb.detonate();</span>
+<span class="fc" id="L679">                        this.bomb.resetMap();</span>
+                
+<span class="fc" id="L681">                        resetLevel = true;</span>
+<span class="fc" id="L682">                        this.bombMade = false;</span>
+<span class="fc" id="L683">                        this.explosionStart = false;</span>
+<span class="fc" id="L684">                        this.explosionTimer = 0;</span>
+                    }
+                }
+
+<span class="pc bpc" id="L688" title="1 of 4 branches missed.">                if (this.bomb.getBrokenWallRight1() &amp;&amp; !resetLevel) {</span>
+
+<span class="fc" id="L690">                    int replaceX = bomb.getX() + 32;</span>
+<span class="fc" id="L691">                    int replaceY = bomb.getY() - 64;</span>
+<span class="fc" id="L692">                    level2 = levels.replaceBrokenWall(level2, replaceX, replaceY); </span>
+
+<span class="fc" id="L694">                    bombGuy.wallReplace(replaceX, replaceY); </span>
+<span class="fc" id="L695">                    bombGuy.tick();</span>
+<span class="fc" id="L696">                    bombGuy.resetReplace(); </span>
+
+<span class="fc" id="L698">                    bomb.updateMap(replaceX, replaceY);</span>
+                }
+
+<span class="pc bpc" id="L701" title="3 of 8 branches missed.">                if (this.bomb.getBrokenWallRight2() &amp;&amp; !this.bomb.getBrokenWallRight1() &amp;&amp; !resetLevel &amp;&amp; !this.bomb.getBlockedRight()) {</span>
+
+<span class="fc" id="L703">                    int replaceX = bomb.getX() + 64;</span>
+<span class="fc" id="L704">                    int replaceY = bomb.getY() - 64;</span>
+<span class="fc" id="L705">                    level2 = levels.replaceBrokenWall(level2, replaceX, replaceY); </span>
+
+<span class="fc" id="L707">                    bombGuy.wallReplace(replaceX, replaceY); </span>
+<span class="fc" id="L708">                    bombGuy.tick();</span>
+<span class="fc" id="L709">                    bombGuy.resetReplace(); </span>
+
+<span class="fc" id="L711">                    bomb.updateMap(replaceX, replaceY);</span>
+                }
+            }
+
+                    
+<span class="pc bpc" id="L716" title="1 of 4 branches missed.">            if (this.lives.getNumberLives() == 0 || this.time.getTimeCount() == 0) {</span>
+            
+<span class="fc" id="L718">                setLevel2 = false;</span>
+<span class="fc" id="L719">                gameOver = true;</span>
+            }
+
+<span class="pc bpc" id="L722" title="1 of 4 branches missed.">            else if (bombGuy.getX() == 416 &amp;&amp; bombGuy.getY() == 240) {</span>
+
+<span class="fc" id="L724">                this.setLevel2 = false;</span>
+<span class="fc" id="L725">                this.winGame = true;</span>
+            }
+        }
+<span class="fc" id="L728">    }</span>
+
+    /**
+     * Returns true if a bomb is made and false if a bomb is not made
+     * 
+     * @return      the state of whether a bomb is made
+     */
+
+    public boolean getBombMade() {
+
+<span class="fc" id="L738">        return this.bombMade;</span>
+    }
+
+
+    /**
+     * Returns true if the level has been reset, false otherwise
+     * 
+     * @return      the state of whether the level has been reset
+     */
+
+
+    public boolean getResetLevel() {
+
+<span class="fc" id="L751">        return this.resetLevel;</span>
+    }
+
+    /**
+     * Returns true if the game is currently displaying level 1, false otherwise
+     * 
+     * @return      whether the game is currently in level 1
+     */
+
+    public boolean getSetLevel1() {
+
+<span class="fc" id="L762">        return this.setLevel1;</span>
+    }
+
+    /**
+     * Returns true if the game is currently displaying level 2, false otherwise
+     * 
+     * @return      whether the game is currently in level 2
+     */
+
+    public boolean getSetLevel2() {
+
+<span class="fc" id="L773">        return this.setLevel2;</span>
+    }
+    
+    /**
+     * Returns true if the game over screen is shown, false otherwise
+     * 
+     * @return      whether the game over screen is shown
+     */
+
+    public boolean getGameOver() {
+
+<span class="fc" id="L784">        return this.gameOver;</span>
+    }
+
+    /**
+     * Returns true if the win game screen is shown, false otherwise
+     * 
+     * @return      whether the win game screen is shown
+     */
+
+    public boolean getWinGame() {
+
+<span class="fc" id="L795">        return this.winGame;</span>
+    }
+   
+    /**
+     * Returns the DynamicMatrix object representing the levels
+     * @return      the DynamicMatrix object storing all of the levels
+     */
+    
+    public DynamicMatrix getLevels() {
+
+<span class="fc" id="L805">        return this.levels;</span>
+    }
+   
+    /**
+     * Returns the arraylist containing the first level
+     * @return      the arraylist in which the first level is stored
+     */
+
+    public ArrayList&lt;String&gt; getFirstLevel() {
+
+<span class="fc" id="L815">        return this.level1;</span>
+    }
+
+    /**
+     * Returns the arraylist containing the second level
+     * @return      the arraylist in which the second level is stored
+     */
+
+    public ArrayList&lt;String&gt; getSecondLevel() {
+
+<span class="fc" id="L825">        return this.level2;</span>
+    }
+
+    /**
+     * Returns the Clock object displayed on the map
+     * 
+     * @return      the clock object displayed on the map
+     */
+
+    public Clock getClock() {
+
+<span class="fc" id="L836">        return this.clock;</span>
+    }
+
+    /**
+     * Returns the Player object displayed on the map
+     * 
+     * @return      the player object displayed on the map
+     */
+
+    public Player getPlayer() {
+
+<span class="fc" id="L847">        return this.player;</span>
+    }
+
+    /**
+     * Returns the BombGuy object displayed on the map
+     * 
+     * @return      the bomb guy object displayed on the map
+     */
+
+
+    public BombGuy getBombGuy() {
+
+<span class="fc" id="L859">        return this.bombGuy;</span>
+    }
+
+    /**
+     * Returns the YellowEnemy object displayed on the map
+     * 
+     * @return      the yellow enemy object displayed on the map
+     */
+
+    public YellowEnemy getYellowEnemy() {
+
+<span class="fc" id="L870">        return this.yellowEnemy;</span>
+    }
+
+    /**
+     * Returns the RedEnemy object displayed on the map
+     * 
+     * @return      the red enemy object displayed on the map
+     */
+
+    public RedEnemy getRedEnemy() {
+
+<span class="fc" id="L881">        return this.redEnemy;</span>
+    }
+
+    /**
+     * Returns the Lives object displayed on the map
+     * 
+     * @return      the lives object displayed on the map
+     */
+
+    public Lives getLives() {
+
+<span class="fc" id="L892">        return this.lives;</span>
+    }
+
+    /**
+     * Returns the Time object displayed on the map
+     * 
+     * @return      the time object displayed on the map
+     */
+
+    public Time getTime() {
+
+<span class="fc" id="L903">        return this.time;</span>
+    }
+
+    /**
+     * Returns the Bomb object displayed on the map
+     * 
+     * @return      the bomb object displayed on the map
+     */
+
+    public Bomb getBomb() {
+
+<span class="fc" id="L914">        return this.bomb;</span>
+    }
+
+    /**
+     * Returns the Explosion object displayed on the map
+     * 
+     * @return      the explosion object displayed on the map
+     */
+
+    public Explosion getExplosion() {
+
+<span class="fc" id="L925">        return this.explosion;</span>
+    }
+
+    /**
+     * Returns true if explosion has started, false otherwise
+     * @return      whether explosion has started
+     */
+
+    public boolean getExplosionStart() {
+
+<span class="fc" id="L935">        return this.explosionStart;</span>
+    }
+
+    /**
+     * Controls bomb guy's movements by attempting to move left
+     */
+
+    public void keyLeft() {
+
+<span class="fc" id="L944">        this.bombGuy.pressLeft();</span>
+<span class="fc" id="L945">    }</span>
+
+    /**
+     * Controls bomb guy's movements by attempting to move right
+     */
+
+    public void keyRight() {
+
+<span class="fc" id="L953">        this.bombGuy.pressRight();</span>
+<span class="fc" id="L954">    }</span>
+
+    /**
+     * Controls bomb guy's movements by attempting to move up
+     */
+
+    public void keyUp() {
+
+<span class="fc" id="L962">        this.bombGuy.pressUp();</span>
+<span class="fc" id="L963">    }</span>
+
+    /**
+     * Controls bomb guy's movements by attempting to move down
+     */
+
+    public void keyDown() {
+
+<span class="fc" id="L971">        this.bombGuy.pressDown();</span>
+<span class="fc" id="L972">    }</span>
+
+    /**
+     * Makes a bomb which is to be deployed
+     */
+
+    public void keySpace() {
+
+<span class="fc" id="L980">        this.bombMade = true;</span>
+<span class="fc" id="L981">        this.lastXCoord = bombGuy.getX();</span>
+<span class="fc" id="L982">        this.lastYCoord = bombGuy.getY() + 16;</span>
+<span class="fc" id="L983">        this.bomb = new Bomb(lastXCoord, lastYCoord);</span>
+<span class="fc" id="L984">        this.explosion = new Explosion(lastXCoord, lastYCoord);</span>
+<span class="fc" id="L985">    }</span>
+
+    /**
+     * ONLY USED FOR TESTING
+     */
+
+    //  ONLY USED FOR TESTING
+
+    public void setSecondLevel() {
+
+<span class="fc" id="L995">        this.setLevel1 = false;</span>
+<span class="fc" id="L996">        this.setLevel2 = true;</span>
+<span class="fc" id="L997">    }</span>
+
+    /**
+     * ONLY USED FOR TESTING
+     */
+
+    //  ONLY USED FOR TESTING
+
+    public void bombSetBrokenWallDown2() {
+
+<span class="fc" id="L1007">        this.bomb.setBrokenWallDown2();</span>
+<span class="fc" id="L1008">    }</span>
+
+    /**
+     * ONLY USED FOR TESTING
+     */
+
+    //  ONLY USED FOR TESTING
+
+    public void bombSetBrokenWallUp2() {
+
+<span class="fc" id="L1018">        this.bomb.setBrokenWallUp2();</span>
+<span class="fc" id="L1019">    }</span>
+    
+
+    /**
+     * ONLY USED FOR TESTING
+     */
+
+    //  ONLY USED FOR TESTING
+
+    public void bombSetBrokenWallLeft2() {
+
+<span class="fc" id="L1030">        this.bomb.setBrokenWallLeft2();</span>
+<span class="fc" id="L1031">    }</span>
+
+
+    /**
+     * ONLY USED FOR TESTING
+     */
+
+    //  ONLY USED FOR TESTING
+
+    public void bombSetBrokenWallRight2() {
+
+<span class="fc" id="L1042">        this.bomb.setBrokenWallRight2();</span>
+<span class="fc" id="L1043">    }</span>
+
+
+    /**
+     * ONLY USED FOR TESTING
+     */
+
+    //  ONLY USED FOR TESTING
+
+    public void setBombGuy(BombGuy bombGuy) {
+
+<span class="fc" id="L1054">        this.bombGuy = bombGuy;</span>
+<span class="fc" id="L1055">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

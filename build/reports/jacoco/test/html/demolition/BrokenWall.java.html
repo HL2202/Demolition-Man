@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BrokenWall.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demolition</a> &gt; <a href="index.source.html" class="el_package">demolition</a> &gt; <span class="el_source">BrokenWall.java</span></div><h1>BrokenWall.java</h1><pre class="source lang-java linenums">/**
+ * BrokenWall is the object used to store all of the broken walls which will be loaded into the map.
+ * 
+ * The x and y coordinates of the broken wall are passed as arguments when constructing the object.
+ * 
+ * This corresponds to a specific position denoted by App.java, which draws the broken wall graphic into the coordinates.
+ * 
+ *
+ * A single pixel position which is 32 x 32 represents the tile denoted by the broken wall.
+ *
+ * 
+ * @author  Harry Li
+ * @version %I%, %G%
+ * @since   1.0
+ */
+
+
+package demolition;
+
+import processing.core.PImage;
+
+public class BrokenWall extends Icons {
+
+    /**
+     * Creates a new broken wall object which extends from all of the attributes and methods from the Icons super class, including setSprite(), draw(), getX() and getY().
+     * 
+     * @param x     the x-coordinate of the broken wall
+     * @param y     the y-coordinate of the broken wall
+     * @see         Icons
+     * @since       1.0
+     */
+
+    public BrokenWall(int x, int y) {
+
+<span class="fc" id="L35">        super(x, y);</span>
+<span class="fc" id="L36">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

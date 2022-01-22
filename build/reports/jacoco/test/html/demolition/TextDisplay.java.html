@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TextDisplay.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demolition</a> &gt; <a href="index.source.html" class="el_package">demolition</a> &gt; <span class="el_source">TextDisplay.java</span></div><h1>TextDisplay.java</h1><pre class="source lang-java linenums">/**
+ * TextDisplay is an abstract super class object which forms the class base for all text-related objects: EndScreen, Time and Lives
+ * 
+ * These text objects are objects that will display a certain text onto the screen, which may be changed throughout the game
+ * 
+ * 
+ * @author  Harry Li
+ * @version %I%, %G%
+ * @since   1.0
+ */
+
+
+package demolition;
+
+import processing.core.PApplet;
+import processing.core.PFont;
+
+
+public abstract class TextDisplay {
+    
+    protected int x;
+    protected int y;
+
+    protected float colourOne;
+    protected float colourTwo;
+    protected float colourThree;
+
+    protected PFont font;
+    protected float size;
+
+<span class="fc" id="L31">    protected char[] charSet = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R','S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};</span>
+
+    /**
+     * Displays all of the differen texts all according to their position. 
+     * 
+     * If the text gets updated during the game, a new value will be displayed on the screen
+     * 
+     * Instance method to create the new text to be inherited by all subclasses
+     * 
+     * @param x         the x-coordinate of the text
+     * @param y         the y-coordinate of the text
+     * 
+     * @since           1.0
+     */
+
+<span class="fc" id="L46">    public TextDisplay(int x, int y) {</span>
+
+<span class="fc" id="L48">        this.x = x;</span>
+<span class="fc" id="L49">        this.y = y;</span>
+
+<span class="fc" id="L51">        this.colourOne = 0;</span>
+<span class="fc" id="L52">        this.colourTwo = 0;</span>
+<span class="fc" id="L53">        this.colourThree = 0;</span>
+
+<span class="fc" id="L55">        this.size = 25;</span>
+<span class="fc" id="L56">    }</span>
+
+    /**
+     * Abstract class to create the text which gets displayed by the subclass object
+     * 
+     * @param app   the App from which the program will run
+     */
+
+    public abstract void text(PApplet app);
+
+    /**
+     * Fill in the text to the colour black as set by the constructor
+     * 
+     * @param app   the App from which the program will run
+     */
+
+    public void fill(PApplet app) {
+
+<span class="nc" id="L74">        app.fill(colourOne, colourThree, colourThree);</span>
+<span class="nc" id="L75">    }</span>
+
+
+    /**
+     * Creates the font to be used to load the text
+     * 
+     * @param app       the App from which the program will run
+     * @param fontName  the name of the font used represented as a string
+     * @return          the font created as a PFont object
+     */
+
+    public PFont createFont(PApplet app, String fontName) {
+
+<span class="nc" id="L88">        this.font = app.createFont(fontName, this.size, true, this.charSet);</span>
+<span class="nc" id="L89">        return this.font;</span>
+    }
+
+
+    /**
+     * Displays text with the font and size inputted
+     * 
+     * @param font  the font to be used for the text
+     * @param size  the size of the text
+     */
+
+
+    public void textFont(PFont font, float size) {
+        
+<span class="nc" id="L103">        this.font = font;</span>
+<span class="nc" id="L104">        this.size = size;</span>
+<span class="nc" id="L105">    }</span>
+
+
+    /**
+     * Sets the text size to be used to display the text
+     * 
+     * @param app   the size of the text
+     */
+
+
+    public void textSize(PApplet app) {
+        
+<span class="nc" id="L117">        app.textSize(this.size);</span>
+<span class="nc" id="L118">    }</span>
+
+
+    /**
+     * Returns the x value of the text coordinate
+     * 
+     * @return          the x variable corresponding to the x-value position of the text
+     * 
+     */
+
+    public int getX() {
+
+<span class="fc" id="L130">        return this.x;</span>
+    }
+
+    /**
+     * Returns the y value of the text coordinate
+     * 
+     * @return          the y variable corresponding to the y-value position of the text
+     * 
+     */
+
+    public int getY() {
+
+<span class="fc" id="L142">        return this.y;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
