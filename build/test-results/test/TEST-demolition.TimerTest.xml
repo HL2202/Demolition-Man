@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="demolition.TimerTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2021-11-05T12:04:55" hostname="192-168-1-101.tpgi.com.au" time="0.004">
+  <properties/>
+  <testcase name="timeTick()" classname="demolition.TimerTest" time="0.001"/>
+  <testcase name="resetTimer()" classname="demolition.TimerTest" time="0.001"/>
+  <testcase name="loadClock()" classname="demolition.TimerTest" time="0.001"/>
+  <testcase name="loadTimer()" classname="demolition.TimerTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

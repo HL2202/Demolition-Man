@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="demolition.RunnerTest" tests="29" skipped="0" failures="0" errors="0" timestamp="2021-11-05T12:04:55" hostname="192-168-1-101.tpgi.com.au" time="0.051">
+  <properties/>
+  <testcase name="brokenWallDestroyedByExplosion1()" classname="demolition.RunnerTest" time="0.005"/>
+  <testcase name="brokenWallDestroyedByExplosion2()" classname="demolition.RunnerTest" time="0.002"/>
+  <testcase name="brokenWallDestroyedByExplosion3()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="brokenWallDestroyedByExplosion4()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="brokenWallDestroyedByExplosion5()" classname="demolition.RunnerTest" time="0.0"/>
+  <testcase name="brokenWallDestroyedByExplosion6()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="brokenWallDestroyedByExplosion7()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="removeRedEnemy1()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="removeRedEnemy2()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="yellowEnemyRemovedBomb1()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="yellowEnemyRemovedBomb2()" classname="demolition.RunnerTest" time="0.002"/>
+  <testcase name="yellowEnemyRemovedBomb3()" classname="demolition.RunnerTest" time="0.0"/>
+  <testcase name="yellowEnemyRemovedBomb4()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="yellowEnemyRemovedBomb5()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="secondLevel1()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="secondLevel2()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="secondLevel3()" classname="demolition.RunnerTest" time="0.0"/>
+  <testcase name="secondLevel4()" classname="demolition.RunnerTest" time="0.0"/>
+  <testcase name="bombGuyCollideYellowEnemy()" classname="demolition.RunnerTest" time="0.0"/>
+  <testcase name="reachNextLevel()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="level2Test1()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="level2Test2()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="bombGuyDestroyedByExplosions1()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="bombGuyDestroyedByExplosions2()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="bombGuyDestroyedByExplosions3()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="bombGuyDestroyedByExplosions4()" classname="demolition.RunnerTest" time="0.0"/>
+  <testcase name="testExplosion()" classname="demolition.RunnerTest" time="0.0"/>
+  <testcase name="runTest()" classname="demolition.RunnerTest" time="0.001"/>
+  <testcase name="bombGuyCollideRedEnemy()" classname="demolition.RunnerTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

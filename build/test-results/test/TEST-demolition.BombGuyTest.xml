@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="demolition.BombGuyTest" tests="17" skipped="0" failures="0" errors="0" timestamp="2021-11-05T12:04:55" hostname="192-168-1-101.tpgi.com.au" time="0.019">
+  <properties/>
+  <testcase name="playerBlockedByBrokenWallUp()" classname="demolition.BombGuyTest" time="0.002"/>
+  <testcase name="bombGuySprite()" classname="demolition.BombGuyTest" time="0.0"/>
+  <testcase name="playerMoveRight()" classname="demolition.BombGuyTest" time="0.0"/>
+  <testcase name="playerBlockedBySolidWallDown()" classname="demolition.BombGuyTest" time="0.001"/>
+  <testcase name="loadBombGuy()" classname="demolition.BombGuyTest" time="0.0"/>
+  <testcase name="playerMoveUp()" classname="demolition.BombGuyTest" time="0.0"/>
+  <testcase name="playerCornerBlock()" classname="demolition.BombGuyTest" time="0.0"/>
+  <testcase name="playerMoveDown()" classname="demolition.BombGuyTest" time="0.001"/>
+  <testcase name="playerMoveLeft()" classname="demolition.BombGuyTest" time="0.0"/>
+  <testcase name="playerMultipleMoves()" classname="demolition.BombGuyTest" time="0.0"/>
+  <testcase name="playerBlockedByBrokenWallRight()" classname="demolition.BombGuyTest" time="0.001"/>
+  <testcase name="playerBlockedBySolidLeft()" classname="demolition.BombGuyTest" time="0.001"/>
+  <testcase name="testLevel2()" classname="demolition.BombGuyTest" time="0.001"/>
+  <testcase name="playerBlockedByBrokenWallDown()" classname="demolition.BombGuyTest" time="0.001"/>
+  <testcase name="playerBlockedByBrokenWallLeft()" classname="demolition.BombGuyTest" time="0.001"/>
+  <testcase name="playerBlockedBySolidWallRight()" classname="demolition.BombGuyTest" time="0.001"/>
+  <testcase name="playerBlockedBySolidWallUp()" classname="demolition.BombGuyTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

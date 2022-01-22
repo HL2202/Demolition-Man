@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="demolition.RedEnemyTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2021-11-05T12:04:55" hostname="192-168-1-101.tpgi.com.au" time="0.01">
+  <properties/>
+  <testcase name="redEnemySecondWallInteraction()" classname="demolition.RedEnemyTest" time="0.003"/>
+  <testcase name="redEnemyMoveLeftCorrect()" classname="demolition.RedEnemyTest" time="0.001"/>
+  <testcase name="redEnemyMoveRightCorrect()" classname="demolition.RedEnemyTest" time="0.001"/>
+  <testcase name="redEnemyEncounterWallBehaviour()" classname="demolition.RedEnemyTest" time="0.001"/>
+  <testcase name="redEnemyMoveCorrect()" classname="demolition.RedEnemyTest" time="0.003"/>
+  <testcase name="redEnemyLoadCorrectly()" classname="demolition.RedEnemyTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
