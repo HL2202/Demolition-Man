@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="demolition.YellowEnemyTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2021-11-05T12:04:55" hostname="192-168-1-101.tpgi.com.au" time="0.042">
+  <properties/>
+  <testcase name="yellowEnemyMoveDownCorrect()" classname="demolition.YellowEnemyTest" time="0.036"/>
+  <testcase name="yellowEnemyMovementMultiple()" classname="demolition.YellowEnemyTest" time="0.001"/>
+  <testcase name="yellowEnemySecondWallInteraction()" classname="demolition.YellowEnemyTest" time="0.001"/>
+  <testcase name="yellowEnemyLoadCorrectly()" classname="demolition.YellowEnemyTest" time="0.001"/>
+  <testcase name="yellowEnemyEncounterWallBehaviour()" classname="demolition.YellowEnemyTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
